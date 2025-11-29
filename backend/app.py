@@ -17,6 +17,13 @@ jwt = JWTManager(app)
 cache = Cache(app)
 db.init_app(app)
 
+jwt_blocklist = set()
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload):
+    jti = jwt_payload['jti']
+    return jti in jwt_blocklist
+
 with app.app_context():
     init_db()
 
@@ -144,6 +151,13 @@ def register():
         'refresh_token': refresh_token,
         'user': user.to_dict()
     }), 201
+
+@app.route('/api/auth/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    jti = get_jwt()['jti']
+    jwt_blocklist.add(jti)
+    return jsonify({'message': 'Successfully logged out'})
 
 @app.route('/api/auth/refresh', methods=['POST'])
 @jwt_required(refresh=True)

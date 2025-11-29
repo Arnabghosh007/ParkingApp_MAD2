@@ -1248,7 +1248,12 @@ const app = createApp({
                 this.loading = false;
             }
         },
-        logout() {
+        async logout() {
+            try {
+                await api.post('/auth/logout');
+            } catch (error) {
+                console.log('Logout error:', error);
+            }
             api.setToken(null);
             this.isAuthenticated = false;
             this.user = null;

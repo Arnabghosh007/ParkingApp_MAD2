@@ -55,6 +55,7 @@ A multi-user vehicle parking management application built with Flask API backend
 ### Authentication
 - POST `/api/auth/login` - Login
 - POST `/api/auth/register` - Register
+- POST `/api/auth/logout` - Logout (revokes token)
 - POST `/api/auth/refresh` - Refresh token
 
 ### Admin

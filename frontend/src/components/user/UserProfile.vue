@@ -1,11 +1,10 @@
 <template>
   <div class="row g-4">
     <div class="col-md-4">
-      <div class="card border-0 shadow-sm text-center">
+      <div class="card border-0 modern-card text-center">
         <div class="card-body py-4">
-          <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center" 
-               style="width: 100px; height: 100px;">
-            <i class="bi bi-person-fill text-primary" style="font-size: 48px;"></i>
+          <div class="rounded-circle profile-avatar d-inline-flex align-items-center justify-content-center">
+            <i class="bi bi-person-fill" style="font-size: 48px;"></i>
           </div>
           <h4 class="mt-3 mb-1">{{ profile.full_name || profile.username }}</h4>
           <p class="text-muted mb-0">@{{ profile.username }}</p>
@@ -15,9 +14,11 @@
     </div>
     
     <div class="col-md-8">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">Profile Information</h5>
+      <div class="card border-0 modern-card">
+        <div class="card-header modern-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <i class="bi bi-person-badge me-2"></i>Profile Information
+          </h5>
           <button class="btn btn-outline-primary btn-sm" @click="editMode = !editMode">
             <i :class="editMode ? 'bi bi-x' : 'bi bi-pencil'" class="me-1"></i>
             {{ editMode ? 'Cancel' : 'Edit' }}
@@ -230,3 +231,36 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.modern-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.modern-header {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-bottom: 2px solid #667eea20;
+  padding: 1rem 1.5rem;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.badge {
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-weight: 600;
+}
+
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+</style>

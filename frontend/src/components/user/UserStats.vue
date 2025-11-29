@@ -57,9 +57,11 @@
     </div>
     
     <div class="col-md-6">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white">
-          <h5 class="mb-0">Parking Lot Usage</h5>
+      <div class="card border-0 modern-card">
+        <div class="card-header modern-header">
+          <h5 class="mb-0">
+            <i class="bi bi-pie-chart me-2"></i>Parking Lot Usage
+          </h5>
         </div>
         <div class="card-body">
           <div v-if="loading" class="text-center py-4">
@@ -73,9 +75,11 @@
     </div>
     
     <div class="col-md-6">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white">
-          <h5 class="mb-0">Booking Summary</h5>
+      <div class="card border-0 modern-card">
+        <div class="card-header modern-header">
+          <h5 class="mb-0">
+            <i class="bi bi-bar-chart me-2"></i>Booking Summary
+          </h5>
         </div>
         <div class="card-body">
           <div v-if="loading" class="text-center py-4">
@@ -221,3 +225,39 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.stat-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.modern-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.modern-header {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-bottom: 2px solid #667eea20;
+  padding: 1rem 1.5rem;
+}
+</style>

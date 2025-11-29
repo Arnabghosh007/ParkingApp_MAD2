@@ -1,8 +1,8 @@
 <template>
-  <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white">
+  <div class="card border-0 modern-card">
+    <div class="card-header modern-header">
       <h5 class="mb-0">
-        <i class="bi bi-car-front-fill text-primary me-2"></i>
+        <i class="bi bi-car-front-fill me-2"></i>
         Active Booking
       </h5>
     </div>
@@ -202,3 +202,28 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.modern-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.modern-header {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-bottom: 2px solid #667eea20;
+  padding: 1rem 1.5rem;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border: none;
+  font-weight: 600;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+  transform: translateY(-2px);
+}
+</style>

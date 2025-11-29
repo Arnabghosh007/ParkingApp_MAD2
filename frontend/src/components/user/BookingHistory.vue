@@ -1,8 +1,8 @@
 <template>
-  <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+  <div class="card border-0 modern-card">
+    <div class="card-header modern-header d-flex justify-content-between align-items-center">
       <h5 class="mb-0">
-        <i class="bi bi-clock-history text-primary me-2"></i>
+        <i class="bi bi-clock-history me-2"></i>
         Booking History
       </h5>
       <button class="btn btn-outline-primary btn-sm" @click="exportHistory" :disabled="exporting">
@@ -208,3 +208,33 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.modern-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.modern-header {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-bottom: 2px solid #667eea20;
+  padding: 1rem 1.5rem;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(102, 126, 234, 0.05) !important;
+}
+
+.badge {
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-weight: 600;
+}
+
+.bg-light {
+  background-color: rgba(102, 126, 234, 0.08) !important;
+  border-radius: 8px;
+}
+</style>

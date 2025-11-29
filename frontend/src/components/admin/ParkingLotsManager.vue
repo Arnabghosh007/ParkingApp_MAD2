@@ -1,7 +1,9 @@
 <template>
-  <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-      <h5 class="mb-0">Parking Lots Management</h5>
+  <div class="card border-0 modern-card">
+    <div class="card-header modern-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">
+        <i class="bi bi-geo-alt-fill me-2"></i>Parking Lots Management
+      </h5>
       <button class="btn btn-primary btn-sm" @click="showAddModal = true">
         <i class="bi bi-plus-lg me-1"></i> Add New Lot
       </button>
@@ -62,9 +64,12 @@
        :style="{ display: (showAddModal || showEditModal) ? 'block' : 'none' }"
        tabindex="-1" @click.self="closeModal">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">{{ editingLot ? 'Edit Parking Lot' : 'Add New Parking Lot' }}</h5>
+      <div class="modal-content modern-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title">
+            <i :class="editingLot ? 'bi bi-pencil' : 'bi bi-plus-lg'" class="me-2"></i>
+            {{ editingLot ? 'Edit Parking Lot' : 'Add New Parking Lot' }}
+          </h5>
           <button type="button" class="btn-close" @click="closeModal"></button>
         </div>
         <form @submit.prevent="saveLot">
@@ -262,3 +267,40 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.modern-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.modern-header {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-bottom: 2px solid #667eea20;
+  padding: 1rem 1.5rem;
+}
+
+.modern-modal {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modern-modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(102, 126, 234, 0.05) !important;
+}
+
+.badge {
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-weight: 600;
+}
+</style>

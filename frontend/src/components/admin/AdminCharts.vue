@@ -1,9 +1,11 @@
 <template>
   <div class="row g-4">
     <div class="col-md-6">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white">
-          <h5 class="mb-0">Revenue by Parking Lot</h5>
+      <div class="card border-0 modern-card">
+        <div class="card-header modern-header">
+          <h5 class="mb-0">
+            <i class="bi bi-currency-rupee me-2"></i>Revenue by Parking Lot
+          </h5>
         </div>
         <div class="card-body">
           <div v-if="loading" class="text-center py-4">
@@ -17,9 +19,11 @@
     </div>
     
     <div class="col-md-6">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white">
-          <h5 class="mb-0">Bookings by Parking Lot</h5>
+      <div class="card border-0 modern-card">
+        <div class="card-header modern-header">
+          <h5 class="mb-0">
+            <i class="bi bi-bar-chart-fill me-2"></i>Bookings by Parking Lot
+          </h5>
         </div>
         <div class="card-body">
           <div v-if="loading" class="text-center py-4">
@@ -33,9 +37,11 @@
     </div>
     
     <div class="col-md-6">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white">
-          <h5 class="mb-0">Spot Availability</h5>
+      <div class="card border-0 modern-card">
+        <div class="card-header modern-header">
+          <h5 class="mb-0">
+            <i class="bi bi-pie-chart-fill me-2"></i>Spot Availability
+          </h5>
         </div>
         <div class="card-body">
           <div v-if="loading" class="text-center py-4">
@@ -49,9 +55,11 @@
     </div>
     
     <div class="col-md-6">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white">
-          <h5 class="mb-0">Lot Statistics Summary</h5>
+      <div class="card border-0 modern-card">
+        <div class="card-header modern-header">
+          <h5 class="mb-0">
+            <i class="bi bi-graph-up me-2"></i>Lot Statistics Summary
+          </h5>
         </div>
         <div class="card-body">
           <div v-if="loading" class="text-center py-4">
@@ -263,3 +271,29 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.modern-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.modern-header {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-bottom: 2px solid #667eea20;
+  padding: 1rem 1.5rem;
+}
+
+.progress {
+  border-radius: 6px;
+  background-color: #e9ecef;
+}
+
+.progress-bar {
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+</style>

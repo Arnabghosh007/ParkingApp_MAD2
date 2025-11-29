@@ -36,7 +36,9 @@ def send_daily_reminders():
     from app import app
     from models import db, User, ParkingLot, ReserveParkingSpot
     from datetime import datetime, timedelta
-    import requests
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
     
     with app.app_context():
         yesterday = datetime.utcnow() - timedelta(days=1)
@@ -49,93 +51,150 @@ def send_daily_reminders():
             ParkingLot.created_at >= yesterday
         ).all()
         
-        for user in users:
-            if user.email:
-                message = f"Hello {user.full_name or user.username}! "
+        gmail_email = os.environ.get('GMAIL_EMAIL')
+        gmail_password = os.environ.get('GMAIL_PASSWORD')
+        
+        if not gmail_email or not gmail_password:
+            return "Gmail credentials not configured"
+        
+        sent_count = 0
+        try:
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(gmail_email, gmail_password)
+            
+            for user in users:
+                if not user.email:
+                    continue
+                
+                message = f"Hello {user.full_name or user.username}!\n\n"
                 message += "We noticed you haven't visited our parking app recently. "
                 
                 if new_lots:
-                    message += f"We have {len(new_lots)} new parking lots available! "
+                    message += f"We have {len(new_lots)} new parking lots available!\n\n"
+                    for lot in new_lots:
+                        message += f"- {lot.prime_location_name}: Rs. {lot.price}/day\n"
                 
-                message += "Book a parking spot today!"
+                message += "\nBook a parking spot today at our app!"
                 
-                print(f"Reminder sent to {user.email}: {message}")
+                msg = MIMEMultipart()
+                msg['From'] = gmail_email
+                msg['To'] = user.email
+                msg['Subject'] = 'Daily Parking Reminder - Book Your Spot!'
+                msg.attach(MIMEText(message, 'plain'))
+                
+                server.send_message(msg)
+                sent_count += 1
+                print(f"Reminder sent to {user.email}")
+            
+            server.quit()
+        except Exception as e:
+            print(f"Error sending reminders: {str(e)}")
+            return f"Error: {str(e)}"
         
-        return f"Sent reminders to {len(users)} users"
+        return f"Sent reminders to {sent_count} users"
 
 @celery.task
 def send_monthly_reports():
     from app import app
     from models import db, User, ReserveParkingSpot, ParkingSpot, ParkingLot
     from datetime import datetime
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
     
     with app.app_context():
         users = User.query.all()
         
-        for user in users:
-            if not user.email:
-                continue
-            
-            now = datetime.utcnow()
-            first_of_month = datetime(now.year, now.month, 1)
-            
-            bookings = ReserveParkingSpot.query.filter(
-                ReserveParkingSpot.user_id == user.id,
-                ReserveParkingSpot.parking_timestamp >= first_of_month
-            ).all()
-            
-            if not bookings:
-                continue
-            
-            total_spent = sum(b.parking_cost or 0 for b in bookings)
-            total_bookings = len(bookings)
-            
-            lot_usage = {}
-            for b in bookings:
-                spot = ParkingSpot.query.get(b.spot_id)
-                if spot:
-                    lot = ParkingLot.query.get(spot.lot_id)
-                    if lot:
-                        lot_usage[lot.prime_location_name] = lot_usage.get(lot.prime_location_name, 0) + 1
-            
-            most_used_lot = max(lot_usage, key=lot_usage.get) if lot_usage else 'N/A'
-            
-            report_html = f"""
-            <html>
-            <head><style>
-                body {{ font-family: Arial, sans-serif; }}
-                .header {{ background: #4CAF50; color: white; padding: 20px; }}
-                .content {{ padding: 20px; }}
-                .stat {{ margin: 10px 0; padding: 10px; background: #f5f5f5; }}
-            </style></head>
-            <body>
-                <div class="header">
-                    <h1>Monthly Parking Report</h1>
-                    <p>{now.strftime('%B %Y')}</p>
-                </div>
-                <div class="content">
-                    <p>Hello {user.full_name or user.username},</p>
-                    <p>Here's your parking activity summary for this month:</p>
-                    
-                    <div class="stat">
-                        <strong>Total Bookings:</strong> {total_bookings}
-                    </div>
-                    <div class="stat">
-                        <strong>Total Amount Spent:</strong> Rs. {total_spent:.2f}
-                    </div>
-                    <div class="stat">
-                        <strong>Most Used Parking Lot:</strong> {most_used_lot}
-                    </div>
-                    
-                    <p>Thank you for using our Vehicle Parking App!</p>
-                </div>
-            </body>
-            </html>
-            """
-            
-            print(f"Monthly report generated for {user.email}")
+        gmail_email = os.environ.get('GMAIL_EMAIL')
+        gmail_password = os.environ.get('GMAIL_PASSWORD')
         
-        return f"Generated reports for {len(users)} users"
+        if not gmail_email or not gmail_password:
+            return "Gmail credentials not configured"
+        
+        sent_count = 0
+        try:
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(gmail_email, gmail_password)
+            
+            for user in users:
+                if not user.email:
+                    continue
+                
+                now = datetime.utcnow()
+                first_of_month = datetime(now.year, now.month, 1)
+                
+                bookings = ReserveParkingSpot.query.filter(
+                    ReserveParkingSpot.user_id == user.id,
+                    ReserveParkingSpot.parking_timestamp >= first_of_month
+                ).all()
+                
+                if not bookings:
+                    continue
+                
+                total_spent = sum(b.parking_cost or 0 for b in bookings)
+                total_bookings = len(bookings)
+                
+                lot_usage = {}
+                for b in bookings:
+                    spot = ParkingSpot.query.get(b.spot_id)
+                    if spot:
+                        lot = ParkingLot.query.get(spot.lot_id)
+                        if lot:
+                            lot_usage[lot.prime_location_name] = lot_usage.get(lot.prime_location_name, 0) + 1
+                
+                most_used_lot = max(lot_usage, key=lot_usage.get) if lot_usage else 'N/A'
+                
+                report_html = f"""
+                <html>
+                <head><style>
+                    body {{ font-family: Arial, sans-serif; }}
+                    .header {{ background: #4CAF50; color: white; padding: 20px; }}
+                    .content {{ padding: 20px; }}
+                    .stat {{ margin: 10px 0; padding: 10px; background: #f5f5f5; }}
+                </style></head>
+                <body>
+                    <div class="header">
+                        <h1>Monthly Parking Report</h1>
+                        <p>{now.strftime('%B %Y')}</p>
+                    </div>
+                    <div class="content">
+                        <p>Hello {user.full_name or user.username},</p>
+                        <p>Here's your parking activity summary for this month:</p>
+                        
+                        <div class="stat">
+                            <strong>Total Bookings:</strong> {total_bookings}
+                        </div>
+                        <div class="stat">
+                            <strong>Total Amount Spent:</strong> Rs. {total_spent:.2f}
+                        </div>
+                        <div class="stat">
+                            <strong>Most Used Parking Lot:</strong> {most_used_lot}
+                        </div>
+                        
+                        <p>Thank you for using our Vehicle Parking App!</p>
+                    </div>
+                </body>
+                </html>
+                """
+                
+                msg = MIMEMultipart('alternative')
+                msg['From'] = gmail_email
+                msg['To'] = user.email
+                msg['Subject'] = f"Monthly Parking Report - {now.strftime('%B %Y')}"
+                msg.attach(MIMEText(report_html, 'html'))
+                
+                server.send_message(msg)
+                sent_count += 1
+                print(f"Monthly report sent to {user.email}")
+            
+            server.quit()
+        except Exception as e:
+            print(f"Error sending reports: {str(e)}")
+            return f"Error: {str(e)}"
+        
+        return f"Sent reports to {sent_count} users"
 
 @celery.task
 def generate_csv_task(job_id):

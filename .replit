@@ -45,3 +45,13 @@ externalPort = 3002
 [[ports]]
 localPort = 6379
 externalPort = 3001
+
+[[ports]]
+localPort = 44855
+externalPort = 3003
+
+[userenv]
+
+[userenv.shared]
+GMAIL_EMAIL = "parkhere870@gmail.com"
+GMAIL_PASSWORD = "abcd@1234"

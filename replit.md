@@ -1,7 +1,7 @@
 # Vehicle Parking App V2
 
 ## Overview
-A multi-user vehicle parking management application built with Flask API backend and Vue.js frontend. The app manages different parking lots, parking spots, and parked vehicles for 4-wheeler parking.
+A multi-user vehicle parking management application built with Flask API backend and Vue.js 3 SPA frontend with Vite. The app manages different parking lots, parking spots, and parked vehicles for 4-wheeler parking.
 
 ## Project Architecture
 
@@ -11,11 +11,15 @@ A multi-user vehicle parking management application built with Flask API backend
 - **Models**: `backend/models.py`
 - **Configuration**: `backend/config.py`
 - **Celery Tasks**: `backend/celery_app.py`
+- **Runs on**: Port 5000
 
-### Frontend (Vue.js with Bootstrap)
-- **Location**: `/frontend/public/`
-- **Entry Point**: `frontend/public/index.html`
-- **Vue App**: `frontend/public/app.js`
+### Frontend (Vue.js 3 with Vite)
+- **Location**: `/frontend/src/`
+- **Build Tool**: Vite 5
+- **Entry Point**: `frontend/src/main.js`
+- **Components**: Vue single-file components (.vue)
+- **Built Output**: `frontend/dist/` (served from `frontend/public/`)
+- **Router**: Vue Router 4 with role-based redirects
 
 ### Database
 - **SQLite**: `backend/parking.db` (auto-created)
@@ -79,7 +83,17 @@ A multi-user vehicle parking management application built with Flask API backend
 
 ### Start Command
 ```bash
-redis-server --daemonize yes; python run.py
+redis-server --daemonize yes 2>/dev/null; python backend/run.py &  sleep 2 && cd frontend && npm run dev
+```
+
+### Frontend Development
+```bash
+cd frontend && npm run dev    # Run Vite dev server on port 5000
+```
+
+### Frontend Production Build
+```bash
+cd frontend && npm run build  # Build to dist/, outputs to public/
 ```
 
 ### Celery Worker (for background jobs)
@@ -96,23 +110,27 @@ cd backend && celery -A celery_app beat --loglevel=info
 - Username: `admin`
 - Password: `admin123`
 
-## Frameworks Used
-- Flask (API)
-- Vue.js 3 (CDN)
-- Bootstrap 5
-- SQLite
-- Redis (Caching)
-- Celery (Background Jobs)
-- Chart.js (Charts)
-- Flask-JWT-Extended (Authentication)
-- Flask-Caching (Redis Cache)
-- Flask-CORS
-- Flask-SQLAlchemy
+## Frontend Structure
+- **Components**: `src/components/` (auth, admin, user, shared)
+- **Views**: `src/views/` (LoginView, RegisterView, AdminDashboard, UserDashboard)
+- **Router**: `src/router/index.js` (route definitions with guards)
+- **Services**: `src/services/api.js` (API client with axios)
+- **Composables**: `src/composables/useAuth.js` (auth state management)
+- **Build Config**: `vite.config.js` (Vue + Vite configuration)
 
-## Recent Changes
-- Initial V2 implementation (November 2025)
-- Converted from Jinja2 templates to Vue.js SPA
-- Added JWT authentication
-- Added Redis caching
-- Added Celery background jobs
-- Added Chart.js visualizations
+## Frameworks Used
+- **Backend**: Flask, Flask-JWT-Extended, Flask-Caching, Flask-CORS, Flask-SQLAlchemy
+- **Frontend**: Vue.js 3, Vue Router 4, Axios, Vite 5, Bootstrap 5
+- **Database**: SQLite
+- **Caching & Jobs**: Redis, Celery
+- **Charts**: Chart.js
+- **Icons**: Bootstrap Icons
+
+## Recent Changes (November 2025)
+- ✅ Converted from Jinja2 templates to Vue.js 3 SPA with Vite build tool
+- ✅ Set up proper Vue component file structure with Vue Router
+- ✅ Implemented JWT authentication with role-based access control
+- ✅ Added Redis caching for API performance
+- ✅ Added Celery background jobs (daily reminders, monthly reports)
+- ✅ Added logout endpoint with token revocation via Redis blocklist
+- ✅ Built Vue app with Vite and configured Flask to serve production build

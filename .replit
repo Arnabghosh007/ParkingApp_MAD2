@@ -22,22 +22,26 @@ args = "Start application"
 name = "Start application"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "redis-server --daemonize yes 2>/dev/null; python run.py"
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "redis-server --daemonize yes 2>/dev/null; python run.py &  sleep 2 && cd frontend && npm run dev"
+waitForPort = 5000
 
 [[ports]]
 localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 6379
+localPort = 5001
 externalPort = 3000
 
 [[ports]]
-localPort = 34779
+localPort = 6379
 externalPort = 3001
+
+[[ports]]
+localPort = 38737
+externalPort = 3002

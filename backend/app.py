@@ -9,7 +9,7 @@ import os
 from config import Config
 from models import db, init_db, Admin, User, ParkingLot, ParkingSpot, ReserveParkingSpot, ExportJob
 
-app = Flask(__name__, static_folder='../frontend/public', static_url_path='')
+app = Flask(__name__, static_folder='../frontend/dist', static_url_path='')
 app.config.from_object(Config)
 
 CORS(app, resources={r"/api/*": {"origins": "*"}})

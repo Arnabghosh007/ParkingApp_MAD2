@@ -224,15 +224,15 @@ def get_parking_lots_admin():
 def create_parking_lot():
     data = request.get_json()
     
-    required = ['prime_location_name', 'price', 'address', 'pin_code', 'number_of_spots']
+    required = ['prime_location_name', 'price', 'number_of_spots']
     if not all(k in data for k in required):
-        return jsonify({'error': 'Missing required fields'}), 400
+        return jsonify({'error': 'Missing required fields: prime_location_name, price, number_of_spots'}), 400
     
     lot = ParkingLot(
         prime_location_name=data['prime_location_name'],
         price=float(data['price']),
-        address=data['address'],
-        pin_code=data['pin_code'],
+        address=data.get('address', 'TBD'),
+        pin_code=data.get('pin_code', 'TBD'),
         number_of_spots=int(data['number_of_spots'])
     )
     db.session.add(lot)

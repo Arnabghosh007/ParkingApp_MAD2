@@ -94,8 +94,6 @@ def login():
     else:
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
-            user.last_visit = datetime.utcnow()
-            db.session.commit()
             access_token = create_access_token(
                 identity=str(user.id),
                 additional_claims={'role': 'user', 'username': user.username}

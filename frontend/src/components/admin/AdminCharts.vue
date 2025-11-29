@@ -131,20 +131,30 @@ export default {
       try {
         const response = await adminApi.getStatsSummary()
         lotStats.value = response.data.lot_stats || []
-        setTimeout(() => renderCharts(), 100)
+        
+        // Render charts when data is loaded and DOM is ready
+        if (lotStats.value && lotStats.value.length > 0) {
+          setTimeout(() => renderCharts(), 100)
+        }
       } catch (error) {
         console.error('Failed to load statistics:', error)
+        lotStats.value = []
       } finally {
         loading.value = false
       }
     }
     
     const renderCharts = () => {
+      if (!lotStats.value || lotStats.value.length === 0) {
+        console.log('No data to render charts')
+        return
+      }
+      
       const labels = lotStats.value.map(l => l.name)
       const revenues = lotStats.value.map(l => l.revenue)
-      const bookings = lotStats.value.map(l => l.total_bookings)
-      const available = lotStats.value.map(l => l.available)
-      const occupied = lotStats.value.map(l => l.occupied)
+      const bookings = lotStats.value.map(l => l.total_bookings || 0)
+      const available = lotStats.value.map(l => l.available || 0)
+      const occupied = lotStats.value.map(l => l.occupied || 0)
       
       if (revenueChartRef.value) {
         if (revenueChart) revenueChart.destroy()

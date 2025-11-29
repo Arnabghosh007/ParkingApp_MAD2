@@ -129,7 +129,14 @@ export default {
       loading.value = true
       try {
         const response = await userApi.getStatsSummary()
-        stats.value = response.data
+        stats.value = response.data || {
+          total_bookings: 0,
+          active_bookings: 0,
+          completed_bookings: 0,
+          total_spent: 0,
+          total_hours: 0,
+          lot_usage: {}
+        }
         setTimeout(() => renderCharts(), 100)
       } catch (error) {
         console.error('Failed to load statistics:', error)

@@ -34,6 +34,11 @@
               </router-link>
             </li>
             <li class="nav-item">
+              <router-link class="nav-link" :to="{ name: 'admin-tab', params: { tab: 'spots' } }">
+                Parking Spots
+              </router-link>
+            </li>
+            <li class="nav-item">
               <router-link class="nav-link" :to="{ name: 'admin-tab', params: { tab: 'charts' } }">
                 Charts
               </router-link>

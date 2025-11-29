@@ -40,6 +40,15 @@
         <li class="nav-item">
           <router-link 
             class="nav-link" 
+            :class="{ active: activeTab === 'spots' }"
+            :to="{ name: 'admin-tab', params: { tab: 'spots' } }"
+          >
+            <i class="bi bi-p-square-fill me-1"></i> Parking Spots
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link 
+            class="nav-link" 
             :class="{ active: activeTab === 'charts' }"
             :to="{ name: 'admin-tab', params: { tab: 'charts' } }"
           >
@@ -52,6 +61,7 @@
         <DashboardStats v-if="activeTab === 'dashboard'" />
         <ParkingLotsManager v-else-if="activeTab === 'lots'" />
         <UsersList v-else-if="activeTab === 'users'" />
+        <ParkingSpots v-else-if="activeTab === 'spots'" />
         <AdminCharts v-else-if="activeTab === 'charts'" />
       </div>
     </div>
@@ -64,6 +74,7 @@ import { useRoute } from 'vue-router'
 import DashboardStats from '../components/admin/DashboardStats.vue'
 import ParkingLotsManager from '../components/admin/ParkingLotsManager.vue'
 import UsersList from '../components/admin/UsersList.vue'
+import ParkingSpots from '../components/admin/ParkingSpots.vue'
 import AdminCharts from '../components/admin/AdminCharts.vue'
 
 export default {
@@ -72,6 +83,7 @@ export default {
     DashboardStats,
     ParkingLotsManager,
     UsersList,
+    ParkingSpots,
     AdminCharts
   },
   setup() {

@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% block title %}Home | Vehicle Parking System{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row align-items-center justify-content-center mb-5">
+        <div class="col-md-7 text-center">
+            <div class="text-center mb-4">
+                <div class="display-1 mb-3">🚗</div>
+            </div>
+            <h1 class="display-4 fw-bold mb-3">Effortless Parking Starts Here</h1>
+            <p class="lead mb-4">Manage your parking with confidence. Reserve, release, and track your vehicle spots in a secure and user-friendly environment. Join us to experience a smarter way to park.</p>
+            {% if not session.user_id and not session.admin_id %}
+            <a href="/login" class="btn btn-primary btn-lg me-2">Sign In</a>
+            <a href="/register" class="btn btn-outline-primary btn-lg">Create Account</a>
+            {% endif %}
+        </div>
+    </div>
+    <!-- How It Works Section -->
+    <div class="row mb-5">
+        <h2 class="text-center mb-4">How It Works</h2>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-3 mb-3">📝</div>
+                    <h5 class="card-title">Register</h5>
+                    <p class="card-text">Sign up and create your account in seconds. Choose your city and preferred car park.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-3 mb-3">🚗</div>
+                    <h5 class="card-title">Book</h5>
+                    <p class="card-text">Book the first available spot in your chosen car park. No hassle, no waiting.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-3 mb-3">✅</div>
+                    <h5 class="card-title">Park & Release</h5>
+                    <p class="card-text">Park your vehicle, and release the spot when you leave. Track your parking history easily.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <h2 class="text-center mb-4">Features</h2>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card h-100 text-center border-0 bg-light">
+                <div class="display-4 mb-2">🔒</div>
+                <div class="fw-bold">Secure & Reliable</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card h-100 text-center border-0 bg-light">
+                <div class="display-4 mb-2">📱</div>
+                <div class="fw-bold">Mobile Friendly</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card h-100 text-center border-0 bg-light">
+                <div class="display-4 mb-2">👤</div>
+                <div class="fw-bold">User & Admin Dashboards</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card h-100 text-center border-0 bg-light">
+                <div class="display-4 mb-2">📊</div>
+                <div class="fw-bold">Parking Analytics</div>
+            </div>
+        </div>
+    </div>
+    <!-- FAQ Section (CSS-only accordion) -->
+    <div class="row mb-5">
+        <h2 class="text-center mb-4">Frequently Asked Questions</h2>
+        <div class="col-md-8 offset-md-2">
+            <div class="accordion" id="faqAccordion" style="--bs-accordion-bg: #f8f9fa;">
+                <div class="accordion-item border-0 mb-2">
+                    <input type="checkbox" id="faq1" class="d-none">
+                    <label for="faq1" class="accordion-header d-block p-3 bg-white border rounded shadow-sm mb-1" style="cursor:pointer;">
+                        <strong>How do I register?</strong>
+                    </label>
+                    <div class="accordion-body px-3 pb-3" style="display:none;" id="faq1body">
+                        Simply click on 'Create Account', fill in your details, and you're ready to go!
+                    </div>
+                </div>
+                <div class="accordion-item border-0 mb-2">
+                    <input type="checkbox" id="faq2" class="d-none">
+                    <label for="faq2" class="accordion-header d-block p-3 bg-white border rounded shadow-sm mb-1" style="cursor:pointer;">
+                        <strong>Can I choose my parking spot?</strong>
+                    </label>
+                    <div class="accordion-body px-3 pb-3" style="display:none;" id="faq2body">
+                        No, the system automatically assigns you the first available spot in your chosen car park.
+                    </div>
+                </div>
+                <div class="accordion-item border-0 mb-2">
+                    <input type="checkbox" id="faq3" class="d-none">
+                    <label for="faq3" class="accordion-header d-block p-3 bg-white border rounded shadow-sm mb-1" style="cursor:pointer;">
+                        <strong>How do I release my spot?</strong>
+                    </label>
+                    <div class="accordion-body px-3 pb-3" style="display:none;" id="faq3body">
+                        Go to your dashboard and click 'Release Spot' to free up your parking space.
+                    </div>
+                </div>
+                <div class="accordion-item border-0 mb-2">
+                    <input type="checkbox" id="faq4" class="d-none">
+                    <label for="faq4" class="accordion-header d-block p-3 bg-white border rounded shadow-sm mb-1" style="cursor:pointer;">
+                        <strong>Is my data secure?</strong>
+                    </label>
+                    <div class="accordion-body px-3 pb-3" style="display:none;" id="faq4body">
+                        Yes, your data is stored securely and never shared with third parties.
+                    </div>
+                </div>
+            </div>
+            <style>
+                /* CSS-only accordion logic */
+                #faqAccordion input[type="checkbox"]:checked + label + .accordion-body {
+                    display: block !important;
+                }
+            </style>
+        </div>
+    </div>
+    <!-- Contact Section -->
+    <div class="row mb-5 justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-3">Need Help?</h5>
+                    <p class="card-text">Contact us at <a href="mailto:22f3001838@ds.study.iit.ac.in">22f3001838@ds.study.iit.ac.in</a> or visit our <a href="https://www.linkedin.com/in/your-linkedin-url" target="_blank">LinkedIn</a> for support.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

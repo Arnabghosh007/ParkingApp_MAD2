@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Confirmation | Vehicle Parking System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white text-center">
+          <h4 class="mb-0">✅ Booking Confirmed!</h4>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <div class="display-1 text-success">🎉</div>
+            <h5 class="text-success">Your parking spot has been successfully booked!</h5>
+          </div>
+          
+          <!-- Booking Details -->
+          <div class="row">
+            <div class="col-md-6">
+              <h6 class="fw-bold text-primary mb-3">Booking Details</h6>
+              <table class="table table-borderless">
+                <tr>
+                  <td class="fw-bold">Booking ID:</td>
+                  <td>#{{ booking.id }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Spot Number:</td>
+                  <td class="text-success fw-bold">{{ spot.id }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Parking Lot:</td>
+                  <td>{{ lot.prime_location_name }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">City:</td>
+                  <td>{{ lot.city.name }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Address:</td>
+                  <td>{{ lot.address }}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <h6 class="fw-bold text-primary mb-3">Timing & Cost</h6>
+              <table class="table table-borderless">
+                <tr>
+                  <td class="fw-bold">Start Time:</td>
+                  <td>{{ booking.parking_timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Vehicle Number:</td>
+                  <td class="fw-bold">{{ booking.user.vehicle_number }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Hourly Rate:</td>
+                  <td>₹{{ booking.parking_cost_per_unit }}/hour</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Status:</td>
+                  <td><span class="badge bg-success">Active</span></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Important Information -->
+          <div class="alert alert-info mt-4">
+            <h6 class="alert-heading">📋 Important Information:</h6>
+            <ul class="mb-0">
+              <li>Please note your <strong>Spot Number: {{ spot.id }}</strong></li>
+              <li>Keep your vehicle number <strong>{{ booking.user.vehicle_number }}</strong> visible</li>
+              <li>Remember to release your spot when leaving</li>
+              <li>Charges are calculated automatically based on duration</li>
+            </ul>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="text-center mt-4">
+            <a href="/user_dashboard" class="btn btn-primary me-2">
+              <i class="bi bi-speedometer2"></i> Go to Dashboard
+            </a>
+            <a href="/release_spot" class="btn btn-warning me-2">
+              <i class="bi bi-arrow-right-circle"></i> Release Spot
+            </a>
+            <a href="/summary" class="btn btn-info">
+              <i class="bi bi-graph-up"></i> View History
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Tips -->
+      <div class="card mt-4 border-0 bg-light">
+        <div class="card-body">
+          <h6 class="fw-bold mb-3">💡 Quick Tips:</h6>
+          <div class="row">
+            <div class="col-md-4 mb-2">
+              <small><strong>Finding Your Spot:</strong> Look for spot number {{ spot.id }} in {{ lot.prime_location_name }}</small>
+            </div>
+            <div class="col-md-4 mb-2">
+              <small><strong>Duration Tracking:</strong> Your session started at {{ booking.parking_timestamp.strftime('%H:%M') }}</small>
+            </div>
+            <div class="col-md-4 mb-2">
+              <small><strong>Cost Estimate:</strong> ₹{{ booking.parking_cost_per_unit }} per hour</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

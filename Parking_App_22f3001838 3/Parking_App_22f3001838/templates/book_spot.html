@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Book Parking Spot{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="mb-4 text-center">Book a Parking Spot</h2>
+                <form method="GET" action="/book_spot">
+                    <div class="mb-3">
+                        <label for="city" class="form-label">Select City</label>
+                        <select class="form-select" id="city" name="city_id" required onchange="this.form.submit()">
+                            <option value="">Select City</option>
+                            {% for city in cities %}
+                                <option value="{{ city.id }}" {% if selected_city_id and city.id|string == selected_city_id|string %}selected{% endif %}>{{ city.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+                <form method="POST" action="/book_spot">
+                    <input type="hidden" name="city_id" value="{{ selected_city_id }}">
+                    <div class="mb-3">
+                        <label for="car_park" class="form-label">Select Parking Lot</label>
+                        <select class="form-select" id="car_park" name="car_park" required {% if not car_parks %}disabled{% endif %}>
+                            <option value="">Select Parking Lot</option>
+                            {% for lot in car_parks %}
+                                <option value="{{ lot.id }}">{{ lot.prime_location_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3" id="spot-grid-section" style="display:none;">
+                        <label class="form-label">Select a Parking Spot</label>
+                        <div id="spot-grid" class="d-flex flex-wrap gap-3 justify-content-center mb-2"></div>
+                        <input type="hidden" id="spot_id" name="spot_id" required>
+                        <div id="spot-error" class="text-danger small mt-1" style="display:none;">Please select a spot.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="vehicle_number" class="form-label">Vehicle Number</label>
+                        <input type="text" class="form-control" id="vehicle_number" name="vehicle_number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="parking_time" class="form-label">Parking Start Time</label>
+                        <input type="datetime-local" class="form-control" id="parking_time" name="parking_time" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="duration" class="form-label">Duration (hours)</label>
+                        <input type="number" class="form-control" id="duration" name="duration" min="1" max="24" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Book Spot</button>
+                </form>
+                <a href="/user_dashboard" class="btn btn-secondary w-100 mt-3">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

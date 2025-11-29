@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Help & FAQ | Vehicle Parking System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row">
+    <div class="col-md-10 offset-md-1">
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Help & FAQ</h1>
+        <p class="lead">Find answers to common questions about our parking system</p>
+      </div>
+
+      <!-- Quick Help Cards -->
+      <div class="row mb-5">
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 text-center">
+            <div class="card-body">
+              <div class="display-4 mb-3">🚗</div>
+              <h5>Getting Started</h5>
+              <p>Learn how to register and book your first parking spot</p>
+              <a href="#getting-started" class="btn btn-primary btn-sm">Learn More</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 text-center">
+            <div class="card-body">
+              <div class="display-4 mb-3">💰</div>
+              <h5>Pricing & Billing</h5>
+              <p>Understand our pricing structure and payment process</p>
+              <a href="#pricing" class="btn btn-primary btn-sm">Learn More</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 text-center">
+            <div class="card-body">
+              <div class="display-4 mb-3">🔧</div>
+              <h5>Troubleshooting</h5>
+              <p>Solutions to common issues and problems</p>
+              <a href="#troubleshooting" class="btn btn-primary btn-sm">Learn More</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Sections -->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <!-- Getting Started -->
+          <section id="getting-started" class="mb-5">
+            <h3 class="text-primary mb-4">🚗 Getting Started</h3>
+            
+            <div class="mb-4">
+              <h6 class="fw-bold">How do I create an account?</h6>
+              <p>Click "Register" on the homepage, fill in your details including vehicle number, select your city and preferred parking lot, then submit the form.</p>
+            </div>
+            
+            <div class="mb-4">
+              <h6 class="fw-bold">How do I book a parking spot?</h6>
+              <p>After logging in, go to your dashboard and click "Book a Spot". Select your preferred parking lot and the system will automatically assign you the first available spot.</p>
+            </div>
+            
+            <div class="mb-4">
+              <h6 class="fw-bold">Can I choose a specific parking spot?</h6>
+              <p>No, the system automatically assigns the first available spot to ensure fair distribution and optimal space utilization.</p>
+            </div>
+          </section>
+
+          <!-- Pricing -->
+          <section id="pricing" class="mb-5">
+            <h3 class="text-primary mb-4">💰 Pricing & Billing</h3>
+            
+            <div class="mb-4">
+              <h6 class="fw-bold">How is parking cost calculated?</h6>
+              <p>Parking cost is calculated based on the hourly rate of the parking lot multiplied by the duration of your stay. The timer starts when you book and stops when you release the spot.</p>
+            </div>
+            
+            <div class="mb-4">
+              <h6 class="fw-bold">What are the typical hourly rates?</h6>
+              <p>Rates vary by location, typically ranging from ₹25-₹60 per hour depending on the city and specific parking lot location.</p>
+            </div>
+            
+            <div class="mb-4">
+              <h6 class="fw-bold">When do I pay for parking?</h6>
+              <p>Payment is calculated automatically when you release your parking spot. The total cost is displayed in your parking summary.</p>
+            </div>
+          </section>
+
+          <!-- Troubleshooting -->
+          <section id="troubleshooting" class="mb-5">
+            <h3 class="text-primary mb-4">🔧 Troubleshooting</h3>
+            
+            <div class="mb-4">
+              <h6 class="fw-bold">I can't see car parks after selecting a city</h6>
+              <p>After selecting a city, click the "Load Car Parks" button to see available parking locations in that city.</p>
+            </div>
+            
+            <div class="mb-4">
+              <h6 class="fw-bold">I forgot to release my parking spot</h6>
+              <p>Go to your dashboard and click "Release Spot". The system will calculate the total cost based on your actual parking duration.</p>
+            </div>
+            
+            <div class="mb-4">
+              <h6 class="fw-bold">I can't find my booked parking spot</h6>
+              <p>Check your dashboard for the spot number and parking lot details. The spot number is clearly displayed in your active booking information.</p>
+            </div>
+          </section>
+
+          <!-- Contact -->
+          <section class="text-center">
+            <h3 class="text-primary mb-4">Still Need Help?</h3>
+            <p>If you can't find the answer to your question, please contact our support team.</p>
+            <div class="d-flex justify-content-center gap-3">
+              <a href="mailto:22f3001838@ds.study.iit.ac.in" class="btn btn-primary">
+                <i class="bi bi-envelope"></i> Email Support
+              </a>
+              <a href="/" class="btn btn-secondary">
+                <i class="bi bi-house"></i> Back to Home
+              </a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

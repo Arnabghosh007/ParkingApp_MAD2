@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}My Bookings{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4 text-center">My Booking Requests</h2>
+  {% if bookings %}
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Parking Lot</th>
+          <th>Vehicle</th>
+          <th>Start Time</th>
+          <th>Duration (hrs)</th>
+          <th>Status</th>
+          <th>Spot Assigned</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in bookings %}
+        <tr>
+          <td>{{ lots[booking.lot_id].prime_location_name }}</td>
+          <td>{{ booking.vehicle_number }}</td>
+          <td>{{ booking.parking_time.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td>{{ booking.duration }}</td>
+          <td>
+            {% if booking.status == 'pending' %}
+              <span class="badge bg-warning text-dark">Pending</span>
+            {% elif booking.status == 'approved' %}
+              <span class="badge bg-success">Approved</span>
+            {% elif booking.status == 'rejected' %}
+              <span class="badge bg-danger">Rejected</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if booking.status == 'approved' and booking.spot_id %}
+              Spot {{ booking.spot_id }}<br>
+              ({{ spots[booking.spot_id].parking_lot.prime_location_name }})
+              {% set reserve = spots[booking.spot_id].reservations|selectattr('user_id', 'equalto', booking.user_id)|selectattr('leaving_timestamp', 'equalto', None)|list %}
+              {% if not reserve %}
+                <form method="GET" action="/occupy_spot/{{ booking.id }}">
+                  <button type="submit" class="btn btn-sm btn-success mt-2">Mark as Occupied</button>
+                </form>
+              {% endif %}
+            {% elif booking.status == 'pending' %}
+              <span class="text-muted">Waiting for admin</span>
+            {% elif booking.status == 'rejected' %}
+              <span class="text-danger">Request rejected</span>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="alert alert-info text-center">You have no booking requests.</div>
+  {% endif %}
+  <a href="/user_dashboard" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+{% endblock %} 

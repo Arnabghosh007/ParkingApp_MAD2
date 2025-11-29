@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4 text-center">Manage Users</h2>
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+          <thead class="table-primary">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Full Name</th>
+              <th scope="col">Username</th>
+              <th scope="col">Email</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Vehicle Number</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <th scope="row">{{ loop.index }}</th>
+              <td>{{ user.full_name }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.phone }}</td>
+              <td>{{ user.vehicle_number }}</td>
+              <td>
+                <span class="badge bg-info">{{ user.reservations|length }} Bookings</span>
+                <a href="#" class="btn btn-sm btn-outline-primary ms-2 disabled" tabindex="-1" aria-disabled="true">View</a>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="7" class="text-center">No users found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="text-center">
+    <a href="/admin_dashboard" class="btn btn-secondary">Back to Admin Dashboard</a>
+  </div>
+</div>
+{% endblock %} 

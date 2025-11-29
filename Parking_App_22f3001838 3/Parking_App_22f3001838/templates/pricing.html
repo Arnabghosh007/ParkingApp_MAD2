@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Pricing - Vehicle Parking System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="text-center mb-4">
+                <h2>💰 Parking Rates</h2>
+                <p class="text-muted">Affordable and transparent pricing for all your parking needs</p>
+            </div>
+
+            <!-- Hourly Rates -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">⏰ Hourly Rates</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-success">
+                                <div class="card-header bg-light text-center">
+                                    <h5 class="text-success">Standard</h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    <h3 class="text-success">₹{{ pricing.hourly_rates.standard }}</h3>
+                                    <p class="text-muted">per hour</p>
+                                    <ul class="list-unstyled">
+                                        <li>✅ Basic parking spot</li>
+                                        <li>✅ Security monitoring</li>
+                                        <li>✅ 24/7 access</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-warning">
+                                <div class="card-header bg-light text-center">
+                                    <h5 class="text-warning">Premium</h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    <h3 class="text-warning">₹{{ pricing.hourly_rates.premium }}</h3>
+                                    <p class="text-muted">per hour</p>
+                                    <ul class="list-unstyled">
+                                        <li>✅ Covered parking</li>
+                                        <li>✅ CCTV surveillance</li>
+                                        <li>✅ Closer to entrance</li>
+                                        <li>✅ Car wash service</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-danger">
+                                <div class="card-header bg-light text-center">
+                                    <h5 class="text-danger">VIP</h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    <h3 class="text-danger">₹{{ pricing.hourly_rates.vip }}</h3>
+                                    <p class="text-muted">per hour</p>
+                                    <ul class="list-unstyled">
+                                        <li>✅ Premium covered spot</li>
+                                        <li>✅ Valet service</li>
+                                        <li>✅ Priority access</li>
+                                        <li>✅ Complimentary services</li>
+                                        <li>✅ Reserved spot guarantee</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Rates -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">📅 Daily Rates</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-success">
+                                <div class="card-body text-center">
+                                    <h5 class="text-success">Standard</h5>
+                                    <h3 class="text-success">₹{{ pricing.daily_rates.standard }}</h3>
+                                    <p class="text-muted">per day (24 hours)</p>
+                                    <small class="text-success">Save ₹{{ (pricing.hourly_rates.standard * 24) - pricing.daily_rates.standard }}!</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-warning">
+                                <div class="card-body text-center">
+                                    <h5 class="text-warning">Premium</h5>
+                                    <h3 class="text-warning">₹{{ pricing.daily_rates.premium }}</h3>
+                                    <p class="text-muted">per day (24 hours)</p>
+                                    <small class="text-warning">Save ₹{{ (pricing.hourly_rates.premium * 24) - pricing.daily_rates.premium }}!</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-danger">
+                                <div class="card-body text-center">
+                                    <h5 class="text-danger">VIP</h5>
+                                    <h3 class="text-danger">₹{{ pricing.daily_rates.vip }}</h3>
+                                    <p class="text-muted">per day (24 hours)</p>
+                                    <small class="text-danger">Save ₹{{ (pricing.hourly_rates.vip * 24) - pricing.daily_rates.vip }}!</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">ℹ️ Additional Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Payment Methods</h6>
+                            <ul>
+                                <li>💳 Credit/Debit Cards</li>
+                                <li>📱 UPI Payments</li>
+                                <li>💰 Cash (at select locations)</li>
+                                <li>🏦 Net Banking</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Special Offers</h6>
+                            <ul>
+                                <li>🎯 Monthly passes available</li>
+                                <li>📚 Student discounts (20% off)</li>
+                                <li>👥 Corporate rates for bulk bookings</li>
+                                <li>🎉 Weekend special rates</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            * Prices may vary by location and availability<br>
+                            * All prices include applicable taxes<br>
+                            * Cancellation charges may apply for premium bookings
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{{ url_for('book_spot') }}" class="btn btn-primary btn-lg">🚗 Book Now</a>
+                <a href="{{ url_for('contact') }}" class="btn btn-outline-secondary btn-lg">📞 Contact for Custom Rates</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

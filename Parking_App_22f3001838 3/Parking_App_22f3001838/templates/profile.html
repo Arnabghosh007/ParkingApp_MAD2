@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile | Vehicle Parking System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0"><i class="bi bi-person-circle"></i> My Profile</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <!-- Personal Information -->
+            <div class="col-md-6">
+              <h6 class="fw-bold text-primary mb-3">Personal Information</h6>
+              <table class="table table-borderless">
+                <tr>
+                  <td class="fw-bold">Full Name:</td>
+                  <td>{{ user.full_name or 'Not provided' }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Username:</td>
+                  <td>{{ user.username }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Email:</td>
+                  <td>{{ user.email or 'Not provided' }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Phone:</td>
+                  <td>{{ user.phone or 'Not provided' }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Gender:</td>
+                  <td>{{ user.gender.title() if user.gender else 'Not provided' }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Age:</td>
+                  <td>{{ user.age or 'Not provided' }}</td>
+                </tr>
+              </table>
+            </div>
+            
+            <!-- Location & Vehicle Info -->
+            <div class="col-md-6">
+              <h6 class="fw-bold text-primary mb-3">Location & Vehicle</h6>
+              <table class="table table-borderless">
+                <tr>
+                  <td class="fw-bold">Vehicle Number:</td>
+                  <td>{{ user.vehicle_number or 'Not provided' }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Address:</td>
+                  <td>{{ user.address or 'Not provided' }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Pin Code:</td>
+                  <td>{{ user.pin_code or 'Not provided' }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Preferred City:</td>
+                  <td>
+                    {% if user.city_id %}
+                      {{ user.city.name if user.city else 'Unknown' }}
+                    {% else %}
+                      Not selected
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Preferred Car Park:</td>
+                  <td>
+                    {% if user.car_park_id %}
+                      {{ user.car_park.prime_location_name if user.car_park else 'Unknown' }}
+                    {% else %}
+                      Not selected
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Communication:</td>
+                  <td>{{ user.communication_mode.title() if user.communication_mode else 'Not set' }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="row mt-4">
+            <div class="col-md-12 text-center">
+              <a href="/edit_profile" class="btn btn-primary me-2">
+                <i class="bi bi-pencil"></i> Edit Profile
+              </a>
+              <a href="/user_dashboard" class="btn btn-secondary me-2">
+                <i class="bi bi-speedometer2"></i> Dashboard
+              </a>
+              <a href="/summary" class="btn btn-info">
+                <i class="bi bi-graph-up"></i> Parking History
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Stats -->
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card text-center bg-light">
+            <div class="card-body">
+              <div class="display-6 text-primary">{{ total_bookings or 0 }}</div>
+              <div class="small">Total Bookings</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center bg-light">
+            <div class="card-body">
+              <div class="display-6 text-success">{{ active_bookings or 0 }}</div>
+              <div class="small">Active Bookings</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center bg-light">
+            <div class="card-body">
+              <div class="display-6 text-info">₹{{ total_spent or 0 }}</div>
+              <div class="small">Total Spent</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

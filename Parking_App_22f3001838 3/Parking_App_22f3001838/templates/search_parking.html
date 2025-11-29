@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Search Parking - Vehicle Parking System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">🔍 Search Parking Lots</h4>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('search_parking') }}">
+                        <div class="mb-3">
+                            <label for="city_id" class="form-label">Select City</label>
+                            <select class="form-select" id="city_id" name="city_id">
+                                <option value="">All Cities</option>
+                                {% for city in cities %}
+                                    <option value="{{ city.id }}" {% if request.args.get('city_id') == city.id|string %}selected{% endif %}>
+                                        {{ city.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">🔍 Search</button>
+                        <a href="{{ url_for('search_parking') }}" class="btn btn-outline-secondary">Clear</a>
+                    </form>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                {% if request.args.get('city_id') %}
+                    {% set selected_city = cities|selectattr('id', 'equalto', request.args.get('city_id')|int)|first %}
+                    <h5>Parking Lots in {{ selected_city.name }} ({{ lots|length }} found)</h5>
+                {% else %}
+                    <h5>Available Parking Lots ({{ lots|length }} found)</h5>
+                {% endif %}
+                {% if lots %}
+                    <div class="row">
+                        {% for lot in lots %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ lot.prime_location_name }}</h6>
+                                        {% if not request.args.get('city_id') %}
+                                        <p class="card-text">
+                                            <small class="text-muted">📍 {{ lot.city.name }}</small><br>
+                                            <span class="badge bg-info">{{ lot.maximum_number_of_spots }} spots</span>
+                                        </p>
+                                        <a href="{{ url_for('parking_lot_details', lot_id=lot.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+                                        {% else %}
+                                        <p class="card-text">
+                                            <small class="text-muted">📍 {{ lot.city.name }}</small>
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> No parking lots found for the selected criteria.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -9,44 +9,36 @@
         <span class="badge bg-success">User</span>
       </div>
       
-      <ul class="nav nav-tabs mb-4">
-        <li class="nav-item">
-          <router-link 
-            class="nav-link" 
-            :class="{ active: activeTab === 'dashboard' }"
-            :to="{ name: 'user-tab', params: { tab: 'dashboard' } }"
-          >
-            <i class="bi bi-house-door me-1"></i> Dashboard
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link 
-            class="nav-link" 
-            :class="{ active: activeTab === 'book' }"
-            :to="{ name: 'user-tab', params: { tab: 'book' } }"
-          >
-            <i class="bi bi-plus-circle me-1"></i> Book Spot
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link 
-            class="nav-link" 
-            :class="{ active: activeTab === 'history' }"
-            :to="{ name: 'user-tab', params: { tab: 'history' } }"
-          >
-            <i class="bi bi-clock-history me-1"></i> History
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link 
-            class="nav-link" 
-            :class="{ active: activeTab === 'profile' }"
-            :to="{ name: 'user-tab', params: { tab: 'profile' } }"
-          >
-            <i class="bi bi-person me-1"></i> Profile
-          </router-link>
-        </li>
-      </ul>
+      <div class="modern-tabs mb-4">
+        <router-link 
+          class="tab-link" 
+          :class="{ active: activeTab === 'dashboard' }"
+          :to="{ name: 'user-tab', params: { tab: 'dashboard' } }"
+        >
+          <i class="bi bi-house-door me-2"></i> Dashboard
+        </router-link>
+        <router-link 
+          class="tab-link" 
+          :class="{ active: activeTab === 'book' }"
+          :to="{ name: 'user-tab', params: { tab: 'book' } }"
+        >
+          <i class="bi bi-plus-circle me-2"></i> Book Spot
+        </router-link>
+        <router-link 
+          class="tab-link" 
+          :class="{ active: activeTab === 'history' }"
+          :to="{ name: 'user-tab', params: { tab: 'history' } }"
+        >
+          <i class="bi bi-clock-history me-2"></i> History
+        </router-link>
+        <router-link 
+          class="tab-link" 
+          :class="{ active: activeTab === 'profile' }"
+          :to="{ name: 'user-tab', params: { tab: 'profile' } }"
+        >
+          <i class="bi bi-person me-2"></i> Profile
+        </router-link>
+      </div>
       
       <div class="tab-content">
         <div v-if="activeTab === 'dashboard'" class="row g-4">
@@ -120,6 +112,40 @@ export default {
 </script>
 
 <style scoped>
+.modern-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+  overflow-x: auto;
+}
+
+.tab-link {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  color: #6c757d;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.tab-link:hover {
+  color: #667eea;
+  border-bottom-color: #667eea;
+}
+
+.tab-link.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.old-style {
+  display: none;
+}
+
 .nav-tabs .nav-link {
   color: #6c757d;
   border: none;

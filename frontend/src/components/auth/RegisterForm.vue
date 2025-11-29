@@ -1,11 +1,15 @@
 <template>
-  <div class="card shadow-lg" style="width: 450px; max-height: 90vh; overflow-y: auto;">
-    <div class="card-body p-4">
-      <div class="text-center mb-4">
-        <i class="bi bi-car-front-fill text-primary" style="font-size: 3rem;"></i>
-        <h3 class="mt-2">Create Account</h3>
-        <p class="text-muted">Register for a new account</p>
+  <div class="modern-card" style="width: 450px; max-height: 90vh; overflow-y: auto;">
+    <div class="card-header">
+      <div class="text-center">
+        <div class="icon-container">
+          <i class="bi bi-person-plus-fill"></i>
+        </div>
+        <h3 class="mt-3">Create Account</h3>
+        <p class="subtitle">Join our parking community</p>
       </div>
+    </div>
+    <div class="card-body p-4">
       
       <form @submit.prevent="handleRegister">
         <div class="row">
@@ -169,3 +173,55 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.modern-card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  background: white;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem 1rem 1rem;
+  border-bottom: none;
+}
+
+.icon-container {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto;
+  backdrop-filter: blur(10px);
+}
+
+.card-header h3 {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+</style>

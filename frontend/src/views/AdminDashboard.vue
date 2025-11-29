@@ -9,53 +9,43 @@
         <span class="badge bg-primary">Administrator</span>
       </div>
       
-      <ul class="nav nav-tabs mb-4">
-        <li class="nav-item">
-          <router-link 
-            class="nav-link" 
-            :class="{ active: activeTab === 'dashboard' }"
-            :to="{ name: 'admin-tab', params: { tab: 'dashboard' } }"
-          >
-            <i class="bi bi-graph-up me-1"></i> Dashboard
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link 
-            class="nav-link" 
-            :class="{ active: activeTab === 'lots' }"
-            :to="{ name: 'admin-tab', params: { tab: 'lots' } }"
-          >
-            <i class="bi bi-geo-alt me-1"></i> Parking Lots
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link 
-            class="nav-link" 
-            :class="{ active: activeTab === 'users' }"
-            :to="{ name: 'admin-tab', params: { tab: 'users' } }"
-          >
-            <i class="bi bi-people me-1"></i> Users
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link 
-            class="nav-link" 
-            :class="{ active: activeTab === 'spots' }"
-            :to="{ name: 'admin-tab', params: { tab: 'spots' } }"
-          >
-            <i class="bi bi-p-square-fill me-1"></i> Parking Spots
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link 
-            class="nav-link" 
-            :class="{ active: activeTab === 'charts' }"
-            :to="{ name: 'admin-tab', params: { tab: 'charts' } }"
-          >
-            <i class="bi bi-bar-chart me-1"></i> Charts
-          </router-link>
-        </li>
-      </ul>
+      <div class="modern-tabs mb-4">
+        <router-link 
+          class="tab-link" 
+          :class="{ active: activeTab === 'dashboard' }"
+          :to="{ name: 'admin-tab', params: { tab: 'dashboard' } }"
+        >
+          <i class="bi bi-graph-up me-2"></i> Dashboard
+        </router-link>
+        <router-link 
+          class="tab-link" 
+          :class="{ active: activeTab === 'lots' }"
+          :to="{ name: 'admin-tab', params: { tab: 'lots' } }"
+        >
+          <i class="bi bi-geo-alt me-2"></i> Parking Lots
+        </router-link>
+        <router-link 
+          class="tab-link" 
+          :class="{ active: activeTab === 'users' }"
+          :to="{ name: 'admin-tab', params: { tab: 'users' } }"
+        >
+          <i class="bi bi-people me-2"></i> Users
+        </router-link>
+        <router-link 
+          class="tab-link" 
+          :class="{ active: activeTab === 'spots' }"
+          :to="{ name: 'admin-tab', params: { tab: 'spots' } }"
+        >
+          <i class="bi bi-p-square-fill me-2"></i> Parking Spots
+        </router-link>
+        <router-link 
+          class="tab-link" 
+          :class="{ active: activeTab === 'charts' }"
+          :to="{ name: 'admin-tab', params: { tab: 'charts' } }"
+        >
+          <i class="bi bi-bar-chart me-2"></i> Charts
+        </router-link>
+      </div>
       
       <div class="tab-content">
         <DashboardStats v-if="activeTab === 'dashboard'" />
@@ -101,22 +91,33 @@ export default {
 </script>
 
 <style scoped>
-.nav-tabs .nav-link {
+.modern-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+  overflow-x: auto;
+}
+
+.tab-link {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
   color: #6c757d;
-  border: none;
+  text-decoration: none;
   border-bottom: 3px solid transparent;
-  padding: 0.75rem 1.25rem;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  font-weight: 500;
 }
 
-.nav-tabs .nav-link:hover {
-  border-color: transparent;
-  color: #0d6efd;
+.tab-link:hover {
+  color: #667eea;
+  border-bottom-color: #667eea;
 }
 
-.nav-tabs .nav-link.active {
-  color: #0d6efd;
-  background: transparent;
-  border-color: transparent;
-  border-bottom-color: #0d6efd;
+.tab-link.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
 }
 </style>

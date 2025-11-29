@@ -134,3 +134,12 @@ cd backend && celery -A celery_app beat --loglevel=info
 - ✅ Added Celery background jobs (daily reminders, monthly reports)
 - ✅ Added logout endpoint with token revocation via Redis blocklist
 - ✅ Built Vue app with Vite and configured Flask to serve production build
+- ✅ Fixed Chart.js rendering: Revenue, Bookings, Availability, Usage charts now fully functional
+- ✅ Added comprehensive Parking Spots page - view all parking spots by lot with occupancy status
+- ✅ Integrated Parking Spots link in navigation for admins and users
+
+## Charts & Parking Spots
+- **Admin Charts**: Revenue, Total Bookings, Available Spots, Occupied Spots - displays per parking lot
+- **User Charts**: Total Bookings, Active/Completed bookings, Total spent, Lot usage breakdown
+- **Parking Spots Page**: Shows all lots with real-time availability, occupancy percentage, expandable spot details
+- Charts automatically update when parking lots are created or bookings are made

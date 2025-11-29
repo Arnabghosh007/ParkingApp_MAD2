@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import LandingPage from '../views/LandingPage.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
@@ -7,7 +8,9 @@ import UserDashboard from '../views/UserDashboard.vue'
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    name: 'landing',
+    component: LandingPage,
+    meta: { requiresGuest: true }
   },
   {
     path: '/login',

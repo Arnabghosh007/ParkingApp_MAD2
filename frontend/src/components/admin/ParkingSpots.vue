@@ -63,6 +63,27 @@
               </div>
             </div>
           </div>
+          <div v-if="expandedLots.includes(lot.id)" class="card-body border-top">
+            <h6 class="mb-3 small text-muted">All Parking Spots</h6>
+            <div class="row g-2">
+              <div 
+                v-for="spot in getSpotsByLot(lot.id)" 
+                :key="spot.id"
+                class="col-4"
+              >
+                <div 
+                  class="spot-badge text-center p-2 rounded"
+                  :class="spot.status === 'A' ? 'bg-success-light text-success' : 'bg-danger-light text-danger'"
+                >
+                  <div class="small fw-bold">Spot #{{ spot.id }}</div>
+                  <div class="text-xs">
+                    <i :class="spot.status === 'A' ? 'bi bi-check-circle' : 'bi bi-x-circle'"></i>
+                    {{ spot.status === 'A' ? 'Available' : 'Occupied' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="card-footer bg-white">
             <button 
               class="btn btn-sm btn-outline-primary w-100"
@@ -71,28 +92,6 @@
               <i class="bi" :class="expandedLots.includes(lot.id) ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
               {{ expandedLots.includes(lot.id) ? 'Hide' : 'Show' }} Spots
             </button>
-          </div>
-        </div>
-        
-        <!-- Expanded spots list -->
-        <div v-if="expandedLots.includes(lot.id)" class="mt-3">
-          <div class="row g-2">
-            <div 
-              v-for="spot in getSpotsByLot(lot.id)" 
-              :key="spot.id"
-              class="col-6 col-md-4"
-            >
-              <div 
-                class="spot-badge text-center p-2 rounded"
-                :class="spot.status === 'A' ? 'bg-success-light text-success' : 'bg-danger-light text-danger'"
-              >
-                <div class="small fw-bold">Spot #{{ spot.id }}</div>
-                <div class="text-xs">
-                  <i :class="spot.status === 'A' ? 'bi bi-check-circle' : 'bi bi-x-circle'"></i>
-                  {{ spot.status === 'A' ? 'Available' : 'Occupied' }}
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

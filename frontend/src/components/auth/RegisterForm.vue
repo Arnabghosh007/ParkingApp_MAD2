@@ -87,27 +87,6 @@
           </div>
         </div>
         
-        <div class="mb-3">
-          <label for="address" class="form-label">Address</label>
-          <textarea 
-            class="form-control" 
-            id="address" 
-            v-model="formData.address" 
-            rows="2"
-          ></textarea>
-        </div>
-        
-        <div class="mb-3">
-          <label for="pinCode" class="form-label">PIN Code</label>
-          <input 
-            type="text" 
-            class="form-control" 
-            id="pinCode" 
-            v-model="formData.pin_code"
-            maxlength="6"
-          >
-        </div>
-        
         <div v-if="errorMessage" class="alert alert-danger py-2">
           {{ errorMessage }}
         </div>
@@ -150,9 +129,7 @@ export default {
       email: '',
       full_name: '',
       vehicle_number: '',
-      phone: '',
-      address: '',
-      pin_code: ''
+      phone: ''
     })
     
     const confirmPassword = ref('')

@@ -77,14 +77,25 @@
           </div>
           
           <div class="mb-3">
-            <label class="form-label">Vehicle Number</label>
+            <label class="form-label">
+              Vehicle Number
+              <span v-if="userVehicleNumber" class="badge bg-success ms-2">Registered</span>
+            </label>
+            <div v-if="userVehicleNumber && !vehicleNumber" class="alert alert-info py-2 mb-2">
+              <i class="bi bi-info-circle me-1"></i>
+              Using your registered vehicle: <strong>{{ userVehicleNumber }}</strong>
+            </div>
             <input 
               type="text" 
               class="form-control" 
               v-model="vehicleNumber"
-              placeholder="e.g., MH12AB1234"
+              :placeholder="userVehicleNumber ? `Current: ${userVehicleNumber}` : 'e.g., MH12AB1234'"
             >
-            <small class="text-muted">Leave empty to use default vehicle number</small>
+            <small v-if="!userVehicleNumber && !vehicleNumber" class="text-danger">
+              <i class="bi bi-exclamation-circle me-1"></i>
+              Please enter a vehicle number to continue
+            </small>
+            <small v-else class="text-muted">Leave empty to use registered vehicle number</small>
           </div>
           
           <div class="alert alert-info small">
@@ -122,6 +133,7 @@ export default {
     const selectedLot = ref(null)
     const showBookingModal = ref(false)
     const vehicleNumber = ref('')
+    const userVehicleNumber = ref('')
     
     const fetchLots = async () => {
       loading.value = true
@@ -144,6 +156,16 @@ export default {
       }
     }
     
+    const loadUserProfile = async () => {
+      try {
+        const response = await userApi.getUserProfile()
+        userVehicleNumber.value = response.data.vehicle_number || ''
+        vehicleNumber.value = ''
+      } catch (error) {
+        console.error('Failed to load user profile:', error)
+      }
+    }
+    
     const selectLot = (lot) => {
       selectedLot.value = lot
       showBookingModal.value = true
@@ -152,13 +174,18 @@ export default {
     const confirmBooking = async () => {
       if (!selectedLot.value) return
       
+      const finalVehicleNumber = vehicleNumber.value || userVehicleNumber.value
+      
+      if (!finalVehicleNumber) {
+        showToast('Please enter a vehicle number to continue', 'error')
+        return
+      }
+      
       booking.value = true
       try {
         const data = {
-          lot_id: selectedLot.value.id
-        }
-        if (vehicleNumber.value) {
-          data.vehicle_number = vehicleNumber.value
+          lot_id: selectedLot.value.id,
+          vehicle_number: finalVehicleNumber
         }
         
         const response = await userApi.bookSpot(data)
@@ -179,6 +206,7 @@ export default {
     onMounted(() => {
       fetchLots()
       checkActiveBooking()
+      loadUserProfile()
     })
     
     return {
@@ -189,6 +217,7 @@ export default {
       selectedLot,
       showBookingModal,
       vehicleNumber,
+      userVehicleNumber,
       selectLot,
       confirmBooking
     }

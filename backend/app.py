@@ -17,12 +17,22 @@ jwt = JWTManager(app)
 cache = Cache(app)
 db.init_app(app)
 
-jwt_blocklist = set()
+import redis
+redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
 
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload):
     jti = jwt_payload['jti']
-    return jti in jwt_blocklist
+    try:
+        return redis_client.exists(f"blocklist:{jti}") > 0
+    except:
+        return False
+
+def add_token_to_blocklist(jti, expires_in=86400):
+    try:
+        redis_client.setex(f"blocklist:{jti}", expires_in, "revoked")
+    except:
+        pass
 
 with app.app_context():
     init_db()
@@ -156,7 +166,7 @@ def register():
 @jwt_required()
 def logout():
     jti = get_jwt()['jti']
-    jwt_blocklist.add(jti)
+    add_token_to_blocklist(jti)
     return jsonify({'message': 'Successfully logged out'})
 
 @app.route('/api/auth/refresh', methods=['POST'])

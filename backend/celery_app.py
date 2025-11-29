@@ -68,7 +68,6 @@ def send_monthly_reports():
     from app import app
     from models import db, User, ReserveParkingSpot, ParkingSpot, ParkingLot
     from datetime import datetime
-    from flask_mail import Mail, Message
     
     with app.app_context():
         users = User.query.all()

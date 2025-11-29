@@ -9,7 +9,9 @@
           <div v-if="loading" class="text-center py-4">
             <div class="spinner-border text-primary"></div>
           </div>
-          <canvas v-else ref="revenueChartRef" height="300"></canvas>
+          <div v-else class="position-relative" style="height: 300px;">
+            <canvas ref="revenueChartRef"></canvas>
+          </div>
         </div>
       </div>
     </div>
@@ -23,7 +25,9 @@
           <div v-if="loading" class="text-center py-4">
             <div class="spinner-border text-primary"></div>
           </div>
-          <canvas v-else ref="bookingsChartRef" height="300"></canvas>
+          <div v-else class="position-relative" style="height: 300px;">
+            <canvas ref="bookingsChartRef"></canvas>
+          </div>
         </div>
       </div>
     </div>
@@ -37,7 +41,9 @@
           <div v-if="loading" class="text-center py-4">
             <div class="spinner-border text-primary"></div>
           </div>
-          <canvas v-else ref="availabilityChartRef" height="300"></canvas>
+          <div v-else class="position-relative" style="height: 300px;">
+            <canvas ref="availabilityChartRef"></canvas>
+          </div>
         </div>
       </div>
     </div>
@@ -94,7 +100,6 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Chart, registerables } from 'chart.js'
 import { adminApi } from '../../services/api'
-import { showToast } from '../shared/Toast.vue'
 
 Chart.register(...registerables)
 
@@ -126,9 +131,9 @@ export default {
       try {
         const response = await adminApi.getStatsSummary()
         lotStats.value = response.data.lot_stats || []
-        renderCharts()
+        setTimeout(() => renderCharts(), 100)
       } catch (error) {
-        showToast('Failed to load statistics', 'error')
+        console.error('Failed to load statistics:', error)
       } finally {
         loading.value = false
       }
@@ -155,6 +160,7 @@ export default {
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: { display: false }
             }
@@ -175,6 +181,7 @@ export default {
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: { position: 'bottom' }
             }
@@ -203,6 +210,7 @@ export default {
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
               x: { stacked: true },
               y: { stacked: true }

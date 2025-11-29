@@ -65,7 +65,9 @@
           <div v-if="loading" class="text-center py-4">
             <div class="spinner-border text-primary"></div>
           </div>
-          <canvas v-else ref="usageChartRef" height="250"></canvas>
+          <div v-else class="position-relative" style="height: 250px;">
+            <canvas ref="usageChartRef"></canvas>
+          </div>
         </div>
       </div>
     </div>
@@ -79,7 +81,9 @@
           <div v-if="loading" class="text-center py-4">
             <div class="spinner-border text-primary"></div>
           </div>
-          <canvas v-else ref="summaryChartRef" height="250"></canvas>
+          <div v-else class="position-relative" style="height: 250px;">
+            <canvas ref="summaryChartRef"></canvas>
+          </div>
         </div>
       </div>
     </div>
@@ -90,7 +94,6 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Chart, registerables } from 'chart.js'
 import { userApi } from '../../services/api'
-import { showToast } from '../shared/Toast.vue'
 
 Chart.register(...registerables)
 
@@ -127,9 +130,9 @@ export default {
       try {
         const response = await userApi.getStatsSummary()
         stats.value = response.data
-        renderCharts()
+        setTimeout(() => renderCharts(), 100)
       } catch (error) {
-        showToast('Failed to load statistics', 'error')
+        console.error('Failed to load statistics:', error)
       } finally {
         loading.value = false
       }
@@ -153,6 +156,7 @@ export default {
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: { position: 'bottom' }
             }
@@ -182,6 +186,7 @@ export default {
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: { display: false }
             },

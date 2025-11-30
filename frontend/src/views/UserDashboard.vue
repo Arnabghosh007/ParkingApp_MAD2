@@ -8,7 +8,8 @@
             <UserStats :key="statsKey" />
           </div>
           <div class="col-12">
-            <ActiveBooking :key="bookingKey" @released="handleBookingChange" />
+            <BookingSummary v-if="bookingSummary" :summary="bookingSummary" @reset="resetBookingSummary" :key="summaryKey" />
+            <ActiveBooking v-else :key="bookingKey" @released="handleBookingChange" @booking-summary="handleBookingSummary" />
           </div>
         </div>
         
@@ -19,7 +20,6 @@
         />
         <BookingHistory v-else-if="activeTab === 'history'" :key="historyKey" />
         <UserProfile v-else-if="activeTab === 'profile'" />
-        <PaymentForm v-else-if="activeTab === 'payment'" />
       </div>
     </div>
   </div>
@@ -33,7 +33,7 @@ import BookSpot from '../components/user/BookSpot.vue'
 import BookingHistory from '../components/user/BookingHistory.vue'
 import UserStats from '../components/user/UserStats.vue'
 import UserProfile from '../components/user/UserProfile.vue'
-import PaymentForm from '../components/user/PaymentForm.vue'
+import BookingSummary from '../components/user/BookingSummary.vue'
 
 export default {
   name: 'UserDashboard',
@@ -43,7 +43,7 @@ export default {
     BookingHistory,
     UserStats,
     UserProfile,
-    PaymentForm
+    BookingSummary
   },
   setup() {
     const route = useRoute()
@@ -52,6 +52,8 @@ export default {
     const bookingKey = ref(0)
     const bookSpotKey = ref(0)
     const historyKey = ref(0)
+    const summaryKey = ref(0)
+    const bookingSummary = ref(null)
     
     const activeTab = computed(() => {
       return route.params.tab || 'dashboard'
@@ -62,6 +64,17 @@ export default {
       bookingKey.value++
       bookSpotKey.value++
       historyKey.value++
+      bookingSummary.value = null
+    }
+    
+    const handleBookingSummary = (summary) => {
+      bookingSummary.value = summary
+      summaryKey.value++
+    }
+    
+    const resetBookingSummary = () => {
+      bookingSummary.value = null
+      handleBookingChange()
     }
     
     return {
@@ -70,7 +83,11 @@ export default {
       bookingKey,
       bookSpotKey,
       historyKey,
-      handleBookingChange
+      summaryKey,
+      bookingSummary,
+      handleBookingChange,
+      handleBookingSummary,
+      resetBookingSummary
     }
   }
 }

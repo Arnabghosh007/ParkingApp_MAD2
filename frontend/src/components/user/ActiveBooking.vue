@@ -72,7 +72,7 @@
             >
               <span v-if="releasing" class="spinner-border spinner-border-sm me-2"></span>
               <i v-else class="bi bi-box-arrow-right me-2"></i>
-              Release Spot & Pay
+              Release Spot
             </button>
           </div>
         </div>
@@ -88,7 +88,7 @@ import { showToast } from '../shared/Toast.vue'
 
 export default {
   name: 'ActiveBooking',
-  emits: ['released'],
+  emits: ['released', 'booking-summary'],
   setup(props, { emit }) {
     const loading = ref(false)
     const releasing = ref(false)
@@ -100,8 +100,9 @@ export default {
       loading.value = true
       try {
         const response = await userApi.getActiveBookings()
-        if (response.data && response.data.length > 0) {
-          activeBooking.value = response.data[0]
+        const bookings = Array.isArray(response) ? response : (response.data || [])
+        if (bookings && bookings.length > 0) {
+          activeBooking.value = bookings[0]
           await fetchLotInfo()
         } else {
           activeBooking.value = null
@@ -117,7 +118,7 @@ export default {
       if (!activeBooking.value) return
       try {
         const response = await sharedApi.getParkingLots()
-        const lots = response.data
+        const lots = Array.isArray(response) ? response : (response.data || [])
         for (const lot of lots) {
           if (lot.parking_spots && lot.parking_spots.some(s => s.id === activeBooking.value.spot_id)) {
             lotPrice.value = lot.price
@@ -167,16 +168,25 @@ export default {
       releasing.value = true
       try {
         const response = await userApi.releaseSpot(activeBooking.value.id)
-        const duration = response.data.duration_hours
-        const cost = response.data.cost
+        const releaseData = response
         
-        showToast(`
-          Spot released successfully!
-          Duration: ${duration} hours
-          Total cost: ₹${cost}
-        `, 'success')
+        // Prepare summary data
+        const summaryData = {
+          lot_name: activeBooking.value.lot_name,
+          spot_id: activeBooking.value.spot_id,
+          vehicle_number: activeBooking.value.vehicle_number,
+          parking_start: activeBooking.value.parking_timestamp,
+          parking_end: new Date().toISOString(),
+          duration_hours: releaseData.duration_hours || Math.floor((new Date() - new Date(activeBooking.value.parking_timestamp)) / 3600000),
+          duration_minutes: releaseData.duration_minutes || Math.floor(((new Date() - new Date(activeBooking.value.parking_timestamp)) % 3600000) / 60000),
+          hourly_rate: lotPrice.value,
+          total_cost: releaseData.cost || (releaseData.duration_hours * lotPrice.value).toFixed(2)
+        }
+        
+        showToast('Spot released successfully!', 'success')
         
         activeBooking.value = null
+        emit('booking-summary', summaryData)
         emit('released')
       } catch (error) {
         showToast(error.response?.data?.error || 'Failed to release spot', 'error')

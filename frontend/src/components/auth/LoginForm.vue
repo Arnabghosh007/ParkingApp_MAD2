@@ -81,13 +81,6 @@
           <router-link to="/register" class="text-primary">Register here</router-link>
         </p>
       </div>
-      
-      <div class="text-center mt-3 pt-3 border-top">
-        <small class="text-muted">
-          <i class="bi bi-info-circle me-1"></i>
-          Demo Admin: admin / admin123
-        </small>
-      </div>
     </div>
   </div>
 </template>

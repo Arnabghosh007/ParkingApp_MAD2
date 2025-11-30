@@ -155,6 +155,8 @@ export default {
         const response = await userApi.triggerExport()
         const job = response.job
         
+        showToast('Export started. Processing in background...', 'info')
+        
         const downloadFile = (blob) => {
           const url = window.URL.createObjectURL(blob)
           const a = document.createElement('a')
@@ -164,30 +166,38 @@ export default {
           window.URL.revokeObjectURL(url)
         }
         
-        if (job.status === 'completed') {
-          const blob = await userApi.downloadExport(job.id)
-          downloadFile(blob)
-          showToast('Export downloaded successfully', 'success')
-        } else {
-          showToast('Export started. Please wait...', 'info')
-          setTimeout(async () => {
-            try {
-              const statusResponse = await userApi.getExportStatus(job.id)
-              if (statusResponse.status === 'completed') {
-                const blob = await userApi.downloadExport(job.id)
-                downloadFile(blob)
-                showToast('Export downloaded successfully', 'success')
-              } else {
-                showToast('Export is still processing', 'info')
-              }
-            } catch (e) {
-              showToast('Export is still processing', 'info')
+        // Poll for completion (check every 2 seconds, max 30 attempts = 60 seconds)
+        let attempts = 0
+        const maxAttempts = 30
+        const pollInterval = setInterval(async () => {
+          attempts++
+          try {
+            const statusResponse = await userApi.getExportStatus(job.id)
+            if (statusResponse.status === 'completed') {
+              clearInterval(pollInterval)
+              const blob = await userApi.downloadExport(job.id)
+              downloadFile(blob)
+              showToast('Export downloaded successfully!', 'success')
+              exporting.value = false
+            } else if (statusResponse.status === 'failed') {
+              clearInterval(pollInterval)
+              showToast('Export failed. Please try again.', 'error')
+              exporting.value = false
+            } else if (attempts >= maxAttempts) {
+              clearInterval(pollInterval)
+              showToast('Export is taking longer than expected. Please try again later.', 'warning')
+              exporting.value = false
             }
-          }, 3000)
-        }
+          } catch (e) {
+            if (attempts >= maxAttempts) {
+              clearInterval(pollInterval)
+              showToast('Export processing timeout. Please try again.', 'error')
+              exporting.value = false
+            }
+          }
+        }, 2000)
       } catch (error) {
         showToast('Failed to export history', 'error')
-      } finally {
         exporting.value = false
       }
     }

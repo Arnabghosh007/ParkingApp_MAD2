@@ -532,7 +532,7 @@ def user_stats_summary():
 @app.route('/api/user/export', methods=['POST'])
 @user_required
 def trigger_export():
-    import csv
+    from celery_app import generate_csv_task
     
     user_id = get_jwt_identity()
     
@@ -541,49 +541,23 @@ def trigger_export():
     ExportJob.query.filter_by(user_id=int(user_id), status='failed').delete()
     db.session.commit()
     
+    # Create job record
     job = ExportJob(user_id=int(user_id), status='pending')
     db.session.add(job)
     db.session.commit()
     
+    # Queue Celery task to generate CSV asynchronously
     try:
-        # Generate CSV immediately (synchronously)
-        bookings = ReserveParkingSpot.query.filter_by(user_id=int(user_id)).all()
-        
-        os.makedirs('exports', exist_ok=True)
-        filename = f'exports/parking_history_{user_id}_{datetime.utcnow().strftime("%Y%m%d_%H%M%S")}.csv'
-        
-        with open(filename, 'w', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(['Booking ID', 'Spot ID', 'Lot Name', 'Vehicle Number', 
-                           'Parking Time', 'Leaving Time', 'Duration (Hours)', 'Cost', 'Remarks'])
-            
-            for b in bookings:
-                spot = ParkingSpot.query.get(b.spot_id)
-                lot = ParkingLot.query.get(spot.lot_id) if spot else None
-                
-                if b.leaving_timestamp:
-                    duration = (b.leaving_timestamp - b.parking_timestamp).total_seconds() / 3600
-                else:
-                    duration = (datetime.utcnow() - b.parking_timestamp).total_seconds() / 3600
-                
-                writer.writerow([
-                    b.id, b.spot_id, lot.prime_location_name if lot else 'N/A',
-                    b.vehicle_number, b.parking_timestamp, b.leaving_timestamp,
-                    round(duration, 2), b.parking_cost, b.remarks
-                ])
-        
-        job.status = 'completed'
-        job.file_path = filename
-        job.completed_at = datetime.utcnow()
-        db.session.commit()
-        
+        generate_csv_task.delay(job.id)
+        return jsonify({
+            'message': 'Export started. Processing in background.',
+            'job': job.to_dict()
+        }), 200
     except Exception as e:
         job.status = 'failed'
         db.session.commit()
-        print(f"Export error: {str(e)}")
-        raise
-    
-    return jsonify({'message': 'Export completed', 'job': job.to_dict()})
+        print(f"Failed to queue export task: {str(e)}")
+        return jsonify({'error': 'Failed to start export process'}), 500
 
 @app.route('/api/user/export/<int:job_id>')
 @user_required

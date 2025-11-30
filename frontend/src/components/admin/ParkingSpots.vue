@@ -122,17 +122,27 @@ export default {
       loading.value = true
       try {
         const lotsRes = await adminApi.getParkingLots()
-        lots.value = lotsRes
+        lots.value = Array.isArray(lotsRes) ? lotsRes : []
         
         // Fetch spots for each lot
         const allSpotsData = []
-        for (const lot of lots.value) {
-          const spotRes = await adminApi.getLotSpots(lot.id)
-          allSpotsData.push(...(spotRes.spots || []))
+        if (lots.value && lots.value.length > 0) {
+          for (const lot of lots.value) {
+            try {
+              const spotRes = await adminApi.getLotSpots(lot.id)
+              if (spotRes && spotRes.spots) {
+                allSpotsData.push(...spotRes.spots)
+              }
+            } catch (spotError) {
+              console.warn(`Failed to load spots for lot ${lot.id}:`, spotError)
+            }
+          }
         }
         spots.value = allSpotsData
       } catch (error) {
-        console.error('Failed to load data:', error)
+        console.error('Failed to load parking spots:', error)
+        lots.value = []
+        spots.value = []
       } finally {
         loading.value = false
       }

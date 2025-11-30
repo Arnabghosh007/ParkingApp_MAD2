@@ -361,12 +361,10 @@ def get_parking_lots_cached():
     return [lot.to_dict() for lot in lots]
 
 @app.route('/api/parking-lots')
-@jwt_required()
 def get_parking_lots():
     return jsonify(get_parking_lots_cached())
 
 @app.route('/api/parking-lots/<int:lot_id>')
-@jwt_required()
 def get_parking_lot_detail(lot_id):
     lot = ParkingLot.query.get_or_404(lot_id)
     return jsonify(lot.to_dict())

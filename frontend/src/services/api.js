@@ -127,8 +127,10 @@ export const userApi = {
   getExportStatus: (jobId) => 
     api.get(`/user/export/${jobId}`),
   
-  downloadExport: (jobId) => 
-    api.get(`/user/export/${jobId}/download`, { responseType: 'blob' })
+  downloadExport: async (jobId) => {
+    const response = await api.get(`/user/export/${jobId}/download`, { responseType: 'blob' })
+    return response.data
+  }
 }
 
 export const sharedApi = {

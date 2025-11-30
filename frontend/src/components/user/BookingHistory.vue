@@ -155,15 +155,18 @@ export default {
         const response = await userApi.triggerExport()
         const job = response.data.job
         
-        if (job.status === 'completed') {
-          const downloadResponse = await userApi.downloadExport(job.id)
-          const blob = new Blob([downloadResponse.data], { type: 'text/csv' })
+        const downloadFile = (blob) => {
           const url = window.URL.createObjectURL(blob)
           const a = document.createElement('a')
           a.href = url
           a.download = 'parking_history.csv'
           a.click()
           window.URL.revokeObjectURL(url)
+        }
+        
+        if (job.status === 'completed') {
+          const blob = await userApi.downloadExport(job.id)
+          downloadFile(blob)
           showToast('Export downloaded successfully', 'success')
         } else {
           showToast('Export started. Please wait...', 'info')
@@ -171,15 +174,11 @@ export default {
             try {
               const statusResponse = await userApi.getExportStatus(job.id)
               if (statusResponse.data.status === 'completed') {
-                const downloadResponse = await userApi.downloadExport(job.id)
-                const blob = new Blob([downloadResponse.data], { type: 'text/csv' })
-                const url = window.URL.createObjectURL(blob)
-                const a = document.createElement('a')
-                a.href = url
-                a.download = 'parking_history.csv'
-                a.click()
-                window.URL.revokeObjectURL(url)
+                const blob = await userApi.downloadExport(job.id)
+                downloadFile(blob)
                 showToast('Export downloaded successfully', 'success')
+              } else {
+                showToast('Export is still processing', 'info')
               }
             } catch (e) {
               showToast('Export is still processing', 'info')

@@ -85,7 +85,7 @@ export default {
       loading.value = true
       try {
         const response = await adminApi.getUsers()
-        users.value = response.data
+        users.value = response
       } catch (error) {
         showToast('Failed to load users', 'error')
       } finally {

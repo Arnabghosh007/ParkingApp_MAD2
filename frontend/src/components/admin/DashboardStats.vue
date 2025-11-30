@@ -163,7 +163,7 @@ export default {
       loading.value = true
       try {
         const response = await adminApi.getDashboard()
-        stats.value = response.data
+        stats.value = response
       } catch (error) {
         showToast('Failed to load dashboard stats', 'error')
       } finally {

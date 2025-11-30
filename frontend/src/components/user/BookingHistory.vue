@@ -103,7 +103,7 @@ export default {
       loading.value = true
       try {
         const response = await userApi.getBookingHistory()
-        bookings.value = response.data
+        bookings.value = response
       } catch (error) {
         showToast('Failed to load booking history', 'error')
       } finally {
@@ -153,7 +153,7 @@ export default {
       exporting.value = true
       try {
         const response = await userApi.triggerExport()
-        const job = response.data.job
+        const job = response.job
         
         const downloadFile = (blob) => {
           const url = window.URL.createObjectURL(blob)
@@ -173,7 +173,7 @@ export default {
           setTimeout(async () => {
             try {
               const statusResponse = await userApi.getExportStatus(job.id)
-              if (statusResponse.data.status === 'completed') {
+              if (statusResponse.status === 'completed') {
                 const blob = await userApi.downloadExport(job.id)
                 downloadFile(blob)
                 showToast('Export downloaded successfully', 'success')

@@ -160,7 +160,7 @@ export default {
 
       try {
         const response = await userApi.makePayment(formData.value)
-        successMessage.value = 'Payment successful! Transaction ID: ' + response.data.payment.transaction_id
+        successMessage.value = 'Payment successful! Transaction ID: ' + response.payment.transaction_id
         showToast('Payment processed successfully', 'success')
         
         formData.value = {
@@ -182,8 +182,8 @@ export default {
 
     const fetchPayments = async () => {
       try {
-        const response = await userApi.getPayments()
-        payments.value = response.data.payments
+        const response = await userApi.getPaymentHistory()
+        payments.value = response.payments
       } catch (error) {
         console.error('Failed to load payments:', error)
       }

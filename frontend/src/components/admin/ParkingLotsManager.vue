@@ -173,7 +173,7 @@ export default {
       loading.value = true
       try {
         const response = await adminApi.getParkingLots()
-        lots.value = response.data
+        lots.value = response
       } catch (error) {
         showToast('Failed to load parking lots', 'error')
       } finally {

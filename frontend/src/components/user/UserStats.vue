@@ -133,7 +133,7 @@ export default {
       loading.value = true
       try {
         const response = await userApi.getStatsSummary()
-        stats.value = response.data || {
+        stats.value = response || {
           total_bookings: 0,
           active_bookings: 0,
           completed_bookings: 0,

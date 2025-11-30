@@ -139,7 +139,7 @@ export default {
       loading.value = true
       try {
         const response = await sharedApi.getParkingLots()
-        lots.value = response.data
+        lots.value = response
       } catch (error) {
         showToast('Failed to load parking lots', 'error')
       } finally {
@@ -150,7 +150,7 @@ export default {
     const checkActiveBooking = async () => {
       try {
         const response = await userApi.getActiveBookings()
-        hasActiveBooking.value = response.data && response.data.length > 0
+        hasActiveBooking.value = response && response.length > 0
       } catch (error) {
         console.error('Failed to check active booking:', error)
       }
@@ -158,8 +158,8 @@ export default {
     
     const loadUserProfile = async () => {
       try {
-        const response = await userApi.getUserProfile()
-        userVehicleNumber.value = response.data.vehicle_number || ''
+        const response = await userApi.getProfile()
+        userVehicleNumber.value = response.vehicle_number || ''
         vehicleNumber.value = ''
       } catch (error) {
         console.error('Failed to load user profile:', error)

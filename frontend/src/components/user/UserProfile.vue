@@ -158,14 +158,14 @@ export default {
       loading.value = true
       try {
         const response = await userApi.getProfile()
-        profile.value = response.data
+        profile.value = response
         Object.assign(formData, {
-          full_name: response.data.full_name || '',
-          email: response.data.email || '',
-          vehicle_number: response.data.vehicle_number || '',
-          phone: response.data.phone || '',
-          address: response.data.address || '',
-          pin_code: response.data.pin_code || ''
+          full_name: response.full_name || '',
+          email: response.email || '',
+          vehicle_number: response.vehicle_number || '',
+          phone: response.phone || '',
+          address: response.address || '',
+          pin_code: response.pin_code || ''
         })
       } catch (error) {
         showToast('Failed to load profile', 'error')
@@ -178,7 +178,7 @@ export default {
       saving.value = true
       try {
         const response = await userApi.updateProfile(formData)
-        profile.value = response.data
+        profile.value = response
         editMode.value = false
         showToast('Profile updated successfully', 'success')
         

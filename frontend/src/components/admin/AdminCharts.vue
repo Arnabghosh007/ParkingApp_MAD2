@@ -138,7 +138,7 @@ export default {
       loading.value = true
       try {
         const response = await adminApi.getStatsSummary()
-        lotStats.value = response.data.lot_stats || []
+        lotStats.value = response.lot_stats || []
         
         // Render charts when data is loaded and DOM is ready
         if (lotStats.value && lotStats.value.length > 0) {

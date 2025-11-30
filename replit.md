@@ -20,6 +20,8 @@ A multi-user vehicle parking management application built with Flask API backend
 - **Components**: Vue single-file components (.vue)
 - **Built Output**: `frontend/dist/`
 - **Router**: Vue Router 4 with role-based redirects
+- **State Management**: Vuex 4 (centralized auth store)
+- **HTTP Client**: Fetch API (with automatic JWT token management)
 - **Runs on**: Port 5000 (with proxy to backend on 5001)
 
 ### Database
@@ -153,27 +155,40 @@ cd backend && celery -A celery_app beat --loglevel=info
 
 ## Frameworks Used
 - **Backend**: Flask, Flask-JWT-Extended, Flask-Caching, Flask-CORS, Flask-SQLAlchemy
-- **Frontend**: Vue.js 3, Vue Router 4, Axios, Vite 5, Bootstrap 5
+- **Frontend**: Vue.js 3, Vue Router 4, Vuex 4, Fetch API, Vite 5, Bootstrap 5
 - **Database**: SQLite
 - **Caching & Jobs**: Redis, Celery
 - **Email**: Gmail SMTP (smtplib)
+- **PDF Generation**: ReportLab
 - **Charts**: Chart.js
 - **Icons**: Bootstrap Icons
 
 ## Recent Changes (November 30, 2025)
 
-### NEW - PDF Monthly Reports & Payment Portal (LATEST)
-- ✅ **PDF Monthly Reports**: Upgraded from HTML emails to professional PDF format using ReportLab
-  - PDF includes detailed tables with metrics (bookings, hours, spent, top lot)
-  - Professional styling with gradient colors and proper formatting
+### NEW - Fetch API + Vuex Refactor (LATEST)
+- ✅ **Replaced Axios with Fetch API**
+  - Native browser Fetch API for all HTTP requests
+  - Reduced dependencies (removed axios)
+  - Automatic JWT token management and refresh
+  - Centralized error handling in api.js
+  
+- ✅ **Replaced Composable State with Vuex 4**
+  - Centralized state management via Vuex store
+  - Auth state includes: user, tokens, loading, error
+  - Actions: login, register, logout, checkAuth
+  - Getters: isAuthenticated, isAdmin, isUser, currentUser
+  - Components use `useStore()` instead of `useAuth()` composable
+  
+- ✅ **Updated Components for Vuex**
+  - LoginForm.vue - uses store.dispatch('login')
+  - RegisterForm.vue - uses store.dispatch('register')
+  - Navbar.vue - uses store.getters for user data
+
+### NEW - PDF Monthly Reports & Payment Portal
+- ✅ **PDF Monthly Reports**: Professional PDF format using ReportLab
   - Automatically sent on 1st of month at 08:00 UTC
 - ✅ **Dummy Payment Portal**: Complete payment system for users
-  - Credit card payment form with validation (16-digit card, expiry, CVV)
-  - Unique transaction ID generation for each payment
-  - Payment history tracking with transaction details
-  - Card number masked in display (shows only last 4 digits)
   - Accessible from user navbar under "Payment" tab
-  - Backend validation and secure API endpoints
 
 ## Previous Changes (November 2025)
 - ✅ Converted from Jinja2 templates to Vue.js 3 SPA with Vite build tool

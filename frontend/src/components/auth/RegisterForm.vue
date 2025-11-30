@@ -116,16 +116,16 @@
 </template>
 
 <script>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuth } from '../../composables/useAuth'
+import { useStore } from 'vuex'
 import { showToast } from '../shared/Toast.vue'
 
 export default {
   name: 'RegisterForm',
   setup() {
     const router = useRouter()
-    const { register, loading } = useAuth()
+    const store = useStore()
     
     const formData = reactive({
       username: '',
@@ -138,6 +138,8 @@ export default {
     
     const confirmPassword = ref('')
     const errorMessage = ref('')
+    
+    const loading = computed(() => store.getters.authLoading)
     
     const handleRegister = async () => {
       errorMessage.value = ''
@@ -152,7 +154,7 @@ export default {
         return
       }
       
-      const result = await register(formData)
+      const result = await store.dispatch('register', formData)
       
       if (result.success) {
         showToast('Registration successful!', 'success')

@@ -86,26 +86,32 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuth } from '../../composables/useAuth'
+import { useStore } from 'vuex'
 import { showToast } from '../shared/Toast.vue'
 
 export default {
   name: 'LoginForm',
   setup() {
     const router = useRouter()
-    const { login, loading } = useAuth()
+    const store = useStore()
     
     const username = ref('')
     const password = ref('')
     const role = ref('user')
     const errorMessage = ref('')
     
+    const loading = computed(() => store.getters.authLoading)
+    
     const handleLogin = async () => {
       errorMessage.value = ''
       
-      const result = await login(username.value, password.value, role.value)
+      const result = await store.dispatch('login', {
+        username: username.value,
+        password: password.value,
+        role: role.value
+      })
       
       if (result.success) {
         showToast('Login successful!', 'success')

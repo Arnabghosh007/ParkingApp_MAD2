@@ -110,13 +110,17 @@
 <script>
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuth } from '../../composables/useAuth'
+import { useStore } from 'vuex'
 
 export default {
   name: 'Navbar',
   setup() {
     const router = useRouter()
-    const { user, isAdmin, isUser, logout } = useAuth()
+    const store = useStore()
+    
+    const user = computed(() => store.getters.currentUser)
+    const isAdmin = computed(() => store.getters.isAdmin)
+    const isUser = computed(() => store.getters.isUser)
     
     const userName = computed(() => {
       return user.value?.full_name || user.value?.username || 'User'
@@ -131,7 +135,7 @@ export default {
     })
     
     const handleLogout = async () => {
-      await logout()
+      await store.dispatch('logout')
       router.push({ name: 'login' })
     }
     

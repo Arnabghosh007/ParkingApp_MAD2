@@ -27,7 +27,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "redis-server --daemonize yes 2>/dev/null; python run.py &  sleep 2 && cd frontend && npm run dev"
+args = "redis-server --daemonize yes 2>/dev/null && cd /home/runner/workspace && python backend/app.py &  sleep 2 && cd frontend && npm run dev"
 waitForPort = 5000
 
 [[ports]]
@@ -37,10 +37,6 @@ externalPort = 80
 [[ports]]
 localPort = 5001
 externalPort = 3000
-
-[[ports]]
-localPort = 5002
-externalPort = 3002
 
 [[ports]]
 localPort = 6379

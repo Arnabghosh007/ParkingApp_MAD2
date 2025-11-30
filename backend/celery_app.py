@@ -33,6 +33,10 @@ celery = make_celery()
 
 @celery.task
 def send_daily_reminders():
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    
     from app import app
     from models import db, User, ParkingLot, ReserveParkingSpot
     from datetime import datetime, timedelta
@@ -96,6 +100,10 @@ def send_daily_reminders():
 
 @celery.task
 def send_monthly_reports():
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    
     from app import app
     from models import db, User, ReserveParkingSpot, ParkingSpot, ParkingLot
     from datetime import datetime
@@ -236,11 +244,14 @@ def send_monthly_reports():
 
 @celery.task
 def generate_csv_task(job_id):
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    
     from app import app
     from models import db, ExportJob, ReserveParkingSpot, ParkingSpot, ParkingLot
     from datetime import datetime
     import csv
-    import os
     
     with app.app_context():
         job = ExportJob.query.get(job_id)

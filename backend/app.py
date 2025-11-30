@@ -538,9 +538,10 @@ def trigger_export():
     
     user_id = get_jwt_identity()
     
-    pending = ExportJob.query.filter_by(user_id=int(user_id), status='pending').first()
-    if pending:
-        return jsonify({'message': 'Export already in progress', 'job': pending.to_dict()})
+    # Clear old pending/failed jobs for this user
+    ExportJob.query.filter_by(user_id=int(user_id), status='pending').delete()
+    ExportJob.query.filter_by(user_id=int(user_id), status='failed').delete()
+    db.session.commit()
     
     job = ExportJob(user_id=int(user_id), status='pending')
     db.session.add(job)

@@ -254,15 +254,22 @@ def generate_csv_task(job_id):
     import csv
     
     with app.app_context():
-        job = ExportJob.query.get(job_id)
-        if not job:
-            return
-        
         try:
+            job = ExportJob.query.get(job_id)
+            if not job:
+                print(f"Job {job_id} not found")
+                return
+            
+            print(f"Starting export for job {job_id}")
             bookings = ReserveParkingSpot.query.filter_by(user_id=job.user_id).all()
             
-            os.makedirs('exports', exist_ok=True)
-            filename = f'exports/parking_history_{job.user_id}_{datetime.utcnow().strftime("%Y%m%d_%H%M%S")}.csv'
+            # Use absolute path
+            export_dir = os.path.join(os.path.dirname(__file__), '..', 'exports')
+            export_dir = os.path.abspath(export_dir)
+            os.makedirs(export_dir, exist_ok=True)
+            
+            timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+            filename = os.path.join(export_dir, f'parking_history_{job.user_id}_{timestamp}.csv')
             
             with open(filename, 'w', newline='') as f:
                 writer = csv.writer(f)
@@ -287,11 +294,21 @@ def generate_csv_task(job_id):
             job.status = 'completed'
             job.file_path = filename
             job.completed_at = datetime.utcnow()
+            db.session.add(job)
             db.session.commit()
             
-            print(f"Export completed for job {job_id}")
+            print(f"✅ Export completed for job {job_id}: {filename}")
             
         except Exception as e:
-            job.status = 'failed'
-            db.session.commit()
+            print(f"❌ Export error for job {job_id}: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            
+            try:
+                job.status = 'failed'
+                db.session.add(job)
+                db.session.commit()
+            except:
+                pass
+            
             raise e

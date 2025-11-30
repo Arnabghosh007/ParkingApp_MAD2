@@ -589,5 +589,12 @@ def download_export(job_id):
     
     return send_file(job.file_path, as_attachment=True, download_name=f'parking_history.csv')
 
+@app.route('/<path:path>')
+def serve_spa(path):
+    """Catch-all route to serve the Vue SPA for all non-API routes"""
+    if path.startswith('api/'):
+        return jsonify({'error': 'Not Found'}), 404
+    return app.send_static_file('index.html')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

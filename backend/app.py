@@ -73,42 +73,48 @@ def login():
     role = data.get('role', 'user')
     
     if not username or not password:
-        return jsonify({'error': 'Username and password required'}), 400
+        return jsonify({'error': 'Username and password are required'}), 400
     
     if role == 'admin':
         admin = Admin.query.filter_by(username=username).first()
-        if admin and admin.check_password(password):
-            access_token = create_access_token(
-                identity=str(admin.id),
-                additional_claims={'role': 'admin', 'username': admin.username}
-            )
-            refresh_token = create_refresh_token(
-                identity=str(admin.id),
-                additional_claims={'role': 'admin'}
-            )
-            return jsonify({
-                'access_token': access_token,
-                'refresh_token': refresh_token,
-                'user': admin.to_dict()
-            })
+        if not admin:
+            return jsonify({'error': f'Admin username "{username}" not found'}), 401
+        if not admin.check_password(password):
+            return jsonify({'error': 'Incorrect password for this admin account'}), 401
+        
+        access_token = create_access_token(
+            identity=str(admin.id),
+            additional_claims={'role': 'admin', 'username': admin.username}
+        )
+        refresh_token = create_refresh_token(
+            identity=str(admin.id),
+            additional_claims={'role': 'admin'}
+        )
+        return jsonify({
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'user': admin.to_dict()
+        })
     else:
         user = User.query.filter_by(username=username).first()
-        if user and user.check_password(password):
-            access_token = create_access_token(
-                identity=str(user.id),
-                additional_claims={'role': 'user', 'username': user.username}
-            )
-            refresh_token = create_refresh_token(
-                identity=str(user.id),
-                additional_claims={'role': 'user'}
-            )
-            return jsonify({
-                'access_token': access_token,
-                'refresh_token': refresh_token,
-                'user': user.to_dict()
-            })
-    
-    return jsonify({'error': 'Invalid credentials'}), 401
+        if not user:
+            return jsonify({'error': f'User "{username}" not found. Please register first'}), 401
+        if not user.check_password(password):
+            return jsonify({'error': 'Incorrect password. Please try again'}), 401
+        
+        access_token = create_access_token(
+            identity=str(user.id),
+            additional_claims={'role': 'user', 'username': user.username}
+        )
+        refresh_token = create_refresh_token(
+            identity=str(user.id),
+            additional_claims={'role': 'user'}
+        )
+        return jsonify({
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'user': user.to_dict()
+        })
 
 @app.route('/api/auth/register', methods=['POST'])
 def register():

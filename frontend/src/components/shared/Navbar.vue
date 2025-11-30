@@ -66,11 +66,6 @@
                 Profile
               </router-link>
             </li>
-            <li class="nav-item">
-              <router-link class="nav-link" :to="{ name: 'user-tab', params: { tab: 'payment' } }">
-                Payment
-              </router-link>
-            </li>
           </template>
         </ul>
         

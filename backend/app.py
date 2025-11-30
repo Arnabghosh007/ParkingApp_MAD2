@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, send_file, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
 from flask_caching import Cache
@@ -59,7 +59,7 @@ def user_required(fn):
 
 @app.route('/')
 def index():
-    return app.send_static_file('index.html')
+    return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/api/health')
 def health():
@@ -684,7 +684,7 @@ def serve_spa(path):
     """Catch-all route to serve the Vue SPA for all non-API routes"""
     if path.startswith('api/'):
         return jsonify({'error': 'Not Found'}), 404
-    return app.send_static_file('index.html')
+    return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)

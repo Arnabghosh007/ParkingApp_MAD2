@@ -38,6 +38,13 @@
         >
           <i class="bi bi-person me-2"></i> Profile
         </router-link>
+        <router-link 
+          class="tab-link" 
+          :class="{ active: activeTab === 'payment' }"
+          :to="{ name: 'user-tab', params: { tab: 'payment' } }"
+        >
+          <i class="bi bi-credit-card me-2"></i> Payment
+        </router-link>
       </div>
       
       <div class="tab-content">
@@ -57,6 +64,7 @@
         />
         <BookingHistory v-else-if="activeTab === 'history'" :key="historyKey" />
         <UserProfile v-else-if="activeTab === 'profile'" />
+        <PaymentForm v-else-if="activeTab === 'payment'" />
       </div>
     </div>
   </div>
@@ -70,6 +78,7 @@ import BookSpot from '../components/user/BookSpot.vue'
 import BookingHistory from '../components/user/BookingHistory.vue'
 import UserStats from '../components/user/UserStats.vue'
 import UserProfile from '../components/user/UserProfile.vue'
+import PaymentForm from '../components/user/PaymentForm.vue'
 
 export default {
   name: 'UserDashboard',
@@ -78,7 +87,8 @@ export default {
     BookSpot,
     BookingHistory,
     UserStats,
-    UserProfile
+    UserProfile,
+    PaymentForm
   },
   setup() {
     const route = useRoute()

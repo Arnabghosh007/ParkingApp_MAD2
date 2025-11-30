@@ -102,6 +102,14 @@ def send_monthly_reports():
     import smtplib
     from email.mime.text import MIMEText
     from email.mime.multipart import MIMEMultipart
+    from email.mime.base import MIMEBase
+    from email import encoders
+    from reportlab.lib.pagesizes import letter
+    from reportlab.lib import colors
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import inch
+    from io import BytesIO
     
     with app.app_context():
         users = User.query.all()
@@ -135,6 +143,7 @@ def send_monthly_reports():
                 
                 total_spent = sum(b.parking_cost or 0 for b in bookings)
                 total_bookings = len(bookings)
+                total_hours = 0
                 
                 lot_usage = {}
                 for b in bookings:
@@ -143,51 +152,80 @@ def send_monthly_reports():
                         lot = ParkingLot.query.get(spot.lot_id)
                         if lot:
                             lot_usage[lot.prime_location_name] = lot_usage.get(lot.prime_location_name, 0) + 1
+                    if b.leaving_timestamp:
+                        hours = (b.leaving_timestamp - b.parking_timestamp).total_seconds() / 3600
+                    else:
+                        hours = (now - b.parking_timestamp).total_seconds() / 3600
+                    total_hours += hours
                 
                 most_used_lot = max(lot_usage, key=lot_usage.get) if lot_usage else 'N/A'
                 
-                report_html = f"""
-                <html>
-                <head><style>
-                    body {{ font-family: Arial, sans-serif; }}
-                    .header {{ background: #4CAF50; color: white; padding: 20px; }}
-                    .content {{ padding: 20px; }}
-                    .stat {{ margin: 10px 0; padding: 10px; background: #f5f5f5; }}
-                </style></head>
-                <body>
-                    <div class="header">
-                        <h1>Monthly Parking Report</h1>
-                        <p>{now.strftime('%B %Y')}</p>
-                    </div>
-                    <div class="content">
-                        <p>Hello {user.full_name or user.username},</p>
-                        <p>Here's your parking activity summary for this month:</p>
-                        
-                        <div class="stat">
-                            <strong>Total Bookings:</strong> {total_bookings}
-                        </div>
-                        <div class="stat">
-                            <strong>Total Amount Spent:</strong> Rs. {total_spent:.2f}
-                        </div>
-                        <div class="stat">
-                            <strong>Most Used Parking Lot:</strong> {most_used_lot}
-                        </div>
-                        
-                        <p>Thank you for using our Vehicle Parking App!</p>
-                    </div>
-                </body>
-                </html>
-                """
+                pdf_buffer = BytesIO()
+                doc = SimpleDocTemplate(pdf_buffer, pagesize=letter)
+                story = []
+                styles = getSampleStyleSheet()
                 
-                msg = MIMEMultipart('alternative')
+                title_style = ParagraphStyle(
+                    'CustomTitle',
+                    parent=styles['Heading1'],
+                    fontSize=24,
+                    textColor=colors.HexColor('#667eea'),
+                    spaceAfter=10,
+                    alignment=1
+                )
+                
+                story.append(Paragraph("Monthly Parking Activity Report", title_style))
+                story.append(Paragraph(now.strftime('%B %Y'), styles['Heading3']))
+                story.append(Spacer(1, 0.3*inch))
+                
+                story.append(Paragraph(f"Dear {user.full_name or user.username},", styles['Normal']))
+                story.append(Spacer(1, 0.2*inch))
+                story.append(Paragraph("Here's your parking activity summary for this month:", styles['Normal']))
+                story.append(Spacer(1, 0.3*inch))
+                
+                data = [
+                    ['Metric', 'Value'],
+                    ['Total Bookings', str(total_bookings)],
+                    ['Total Hours Parked', f'{round(total_hours, 2)}h'],
+                    ['Total Amount Spent', f'Rs. {total_spent:.2f}'],
+                    ['Most Used Parking Lot', str(most_used_lot)]
+                ]
+                
+                table = Table(data, colWidths=[3*inch, 2*inch])
+                table.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#667eea')),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, 0), 12),
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                    ('GRID', (0, 0), (-1, -1), 1, colors.black)
+                ]))
+                
+                story.append(table)
+                story.append(Spacer(1, 0.3*inch))
+                story.append(Paragraph("Thank you for using our Vehicle Parking App!", styles['Normal']))
+                
+                doc.build(story)
+                pdf_buffer.seek(0)
+                
+                msg = MIMEMultipart()
                 msg['From'] = gmail_email
                 msg['To'] = user.email
                 msg['Subject'] = f"Monthly Parking Report - {now.strftime('%B %Y')}"
-                msg.attach(MIMEText(report_html, 'html'))
+                
+                msg.attach(MIMEText(f"Hello {user.full_name or user.username},\n\nPlease find attached your monthly parking activity report.\n\nBest regards,\nParking App Team", 'plain'))
+                
+                attachment = MIMEBase('application', 'octet-stream')
+                attachment.set_payload(pdf_buffer.getvalue())
+                encoders.encode_base64(attachment)
+                attachment.add_header('Content-Disposition', f'attachment; filename= parking_report_{now.strftime("%B_%Y")}.pdf')
+                msg.attach(attachment)
                 
                 server.send_message(msg)
                 sent_count += 1
-                print(f"Monthly report sent to {user.email}")
+                print(f"Monthly PDF report sent to {user.email}")
             
             server.quit()
         except Exception as e:

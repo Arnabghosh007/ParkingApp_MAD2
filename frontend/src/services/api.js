@@ -130,7 +130,13 @@ export const userApi = {
   downloadExport: async (jobId) => {
     const response = await api.get(`/user/export/${jobId}/download`, { responseType: 'blob' })
     return response.data
-  }
+  },
+  
+  makePayment: (paymentData) => 
+    api.post('/user/payments', paymentData),
+  
+  getPayments: () => 
+    api.get('/user/payments')
 }
 
 export const sharedApi = {

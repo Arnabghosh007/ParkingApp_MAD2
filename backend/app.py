@@ -595,6 +595,60 @@ def download_export(job_id):
     
     return send_file(job.file_path, as_attachment=True, download_name=f'parking_history.csv')
 
+@app.route('/api/user/payments', methods=['POST'])
+@user_required
+def make_payment():
+    from models import Payment
+    import uuid
+    
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    
+    amount = data.get('amount')
+    booking_id = data.get('booking_id')
+    card_number = data.get('card_number')
+    expiry = data.get('expiry')
+    cvv = data.get('cvv')
+    
+    if not all([amount, card_number, expiry, cvv]):
+        return jsonify({'error': 'All payment fields are required'}), 400
+    
+    if len(card_number) < 16:
+        return jsonify({'error': 'Invalid card number'}), 400
+    
+    transaction_id = f"TXN{uuid.uuid4().hex[:12].upper()}"
+    
+    payment = Payment(
+        user_id=int(user_id),
+        booking_id=booking_id,
+        amount=float(amount),
+        card_number=card_number,
+        expiry=expiry,
+        cvv=cvv,
+        transaction_id=transaction_id
+    )
+    
+    db.session.add(payment)
+    db.session.commit()
+    
+    return jsonify({
+        'message': 'Payment successful',
+        'payment': payment.to_dict()
+    }), 201
+
+@app.route('/api/user/payments', methods=['GET'])
+@user_required
+def get_payments():
+    from models import Payment
+    
+    user_id = get_jwt_identity()
+    payments = Payment.query.filter_by(user_id=int(user_id)).all()
+    
+    return jsonify({
+        'payments': [p.to_dict() for p in payments],
+        'total': len(payments)
+    })
+
 @app.route('/<path:path>')
 def serve_spa(path):
     """Catch-all route to serve the Vue SPA for all non-API routes"""

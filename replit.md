@@ -160,7 +160,22 @@ cd backend && celery -A celery_app beat --loglevel=info
 - **Charts**: Chart.js
 - **Icons**: Bootstrap Icons
 
-## Recent Changes (November 2025)
+## Recent Changes (November 30, 2025)
+
+### NEW - PDF Monthly Reports & Payment Portal (LATEST)
+- ✅ **PDF Monthly Reports**: Upgraded from HTML emails to professional PDF format using ReportLab
+  - PDF includes detailed tables with metrics (bookings, hours, spent, top lot)
+  - Professional styling with gradient colors and proper formatting
+  - Automatically sent on 1st of month at 08:00 UTC
+- ✅ **Dummy Payment Portal**: Complete payment system for users
+  - Credit card payment form with validation (16-digit card, expiry, CVV)
+  - Unique transaction ID generation for each payment
+  - Payment history tracking with transaction details
+  - Card number masked in display (shows only last 4 digits)
+  - Accessible from user navbar under "Payment" tab
+  - Backend validation and secure API endpoints
+
+## Previous Changes (November 2025)
 - ✅ Converted from Jinja2 templates to Vue.js 3 SPA with Vite build tool
 - ✅ Set up proper Vue component file structure with Vue Router
 - ✅ Implemented JWT authentication with role-based access control

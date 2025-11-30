@@ -184,6 +184,34 @@ class ExportJob(db.Model):
             'completed_at': self.completed_at.isoformat() if self.completed_at else None
         }
 
+class Payment(db.Model):
+    __tablename__ = 'payments'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    booking_id = db.Column(db.Integer, db.ForeignKey('reserve_parking_spots.id'), nullable=True)
+    amount = db.Column(db.Float, nullable=False)
+    card_number = db.Column(db.String(20), nullable=False)
+    expiry = db.Column(db.String(10), nullable=False)
+    cvv = db.Column(db.String(10), nullable=False)
+    status = db.Column(db.String(20), default='completed')
+    transaction_id = db.Column(db.String(50), nullable=False, unique=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User', backref='payments')
+    booking = db.relationship('ReserveParkingSpot', backref='payment')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'booking_id': self.booking_id,
+            'amount': self.amount,
+            'card_number': f"****{self.card_number[-4:]}",
+            'status': self.status,
+            'transaction_id': self.transaction_id,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
+
 def init_db():
     db.create_all()
     

@@ -218,6 +218,308 @@ redis-server --daemonize yes && cd backend && python app.py & sleep 2 && cd ../f
 
 ---
 
+## 🔄 Celery - Background Jobs & Scheduling
+
+Celery handles background jobs (async tasks) and scheduled jobs (recurring tasks). It requires Redis to work.
+
+### Why Celery?
+
+- **Daily Reminders** - Automatically send emails at 6 PM every day
+- **Monthly Reports** - Generate PDF reports on the 1st of each month
+- **CSV Export** - Process large exports without blocking the app
+- **Email Notifications** - Send emails without slowing down API responses
+
+### Running Celery
+
+You need TWO Celery components running (in addition to Redis, Backend, and Frontend):
+
+#### Terminal 4 - Celery Worker (Processes Jobs)
+
+```bash
+cd backend
+celery -A celery_app worker --loglevel=info
+```
+
+**Expected Output:**
+```
+ -------------- celery@hostname v5.x.x
+---- **** -----
+--- * ***  * -- Linux-5.x.x-x-generic-x86_64 (...)
+-- * - **** ---
+- ** ---------- [config]
+- ** ---------- .broker: redis://localhost:6379/0
+- ** ---------- .concurrency: 4
+- ** ---------- [queues]
+-  *** ------- .celery: exchange:celery(direct) key:celery
+
+[Tasks]
+. celery_app.send_daily_reminders
+. celery_app.send_monthly_reports
+. celery_app.generate_csv_task
+
+[2025-11-30 18:45:00,123: INFO/MainProcess] Ready to accept tasks!
+```
+
+#### Terminal 5 - Celery Beat (Scheduler - Triggers Scheduled Tasks)
+
+```bash
+cd backend
+celery -A celery_app beat --loglevel=info
+```
+
+**Expected Output:**
+```
+celery beat v5.x.x is starting.
+LocalTime -> 2025-11-30 18:45:00
+Configuration:
+    -> broker -> redis://localhost:6379/0
+    -> app -> celery_app:0x...
+    -> schedule -> celery.beat:PersistentScheduler
+    -> app.conf.result_backend -> redis://localhost:6379/0
+    -> app.conf.task_always_eager -> False
+
+Celery Beat Scheduler
+---------------------
+SchedulingError: No module named 'celery_beat' -> using default
+ScheduleEntry: Name: 'daily-reminder'
+  Schedule: <crontab: 18 0 * * *> (at 18:00:00 every day)
+  
+ScheduleEntry: Name: 'monthly-report'
+  Schedule: <crontab: 8 0 1 * *> (at 08:00:00 on day 1 of every month)
+
+Scheduler started.
+```
+
+### Celery Jobs Available
+
+#### 1. Daily Reminders (6 PM Every Day)
+
+**Schedule:** 18:00 UTC daily
+
+**What it does:**
+- Sends email to inactive users (not visited in 24 hours)
+- Notifies about new parking lots
+- Encourages them to book a spot
+
+**Code:** `backend/celery_app.py` - `send_daily_reminders()`
+
+#### 2. Monthly Reports (1st of Month at 8 AM)
+
+**Schedule:** 1st of each month at 08:00 UTC
+
+**What it does:**
+- Generates PDF report for each user
+- Includes: total bookings, hours parked, money spent, most used lot
+- Sends via email with PDF attachment
+
+**Code:** `backend/celery_app.py` - `send_monthly_reports()`
+
+#### 3. CSV Export (User-Triggered)
+
+**Trigger:** User clicks "Export" button
+
+**What it does:**
+- Generates CSV with all parking history
+- Includes: booking ID, spot ID, lot name, vehicle, timestamps, cost
+- Creates async job that can be tracked
+- Notifies user when complete
+
+**Code:** `backend/celery_app.py` - `generate_csv_task()`
+
+### Complete Startup (All Services)
+
+**For full functionality, run all 5 terminals:**
+
+```bash
+# Terminal 1: Redis (Cache & Job Queue)
+redis-server
+
+# Terminal 2: Backend API
+cd backend
+python app.py
+
+# Terminal 3: Frontend UI
+cd frontend
+npm run dev
+
+# Terminal 4: Celery Worker (Process Jobs)
+cd backend
+celery -A celery_app worker --loglevel=info
+
+# Terminal 5: Celery Beat (Schedule Jobs)
+cd backend
+celery -A celery_app beat --loglevel=info
+```
+
+### Celery Configuration
+
+Located in `backend/celery_app.py`:
+
+```python
+celery.conf.update(
+    task_serializer='json',
+    accept_content=['json'],
+    result_serializer='json',
+    timezone='UTC',
+    enable_utc=True,
+    beat_schedule={
+        'daily-reminder': {
+            'task': 'celery_app.send_daily_reminders',
+            'schedule': crontab(hour=18, minute=0),  # 6 PM UTC daily
+        },
+        'monthly-report': {
+            'task': 'celery_app.send_monthly_reports',
+            'schedule': crontab(day_of_month=1, hour=8, minute=0),  # 1st at 8 AM UTC
+        },
+    }
+)
+```
+
+### Monitor Celery Tasks
+
+#### Check Celery Status
+
+```bash
+# In a new terminal
+cd backend
+celery -A celery_app inspect active
+
+# Shows active tasks being processed
+celery -A celery_app inspect scheduled
+
+# Shows scheduled tasks
+celery -A celery_app inspect stats
+
+# Shows worker stats
+```
+
+#### View Celery Logs
+
+```bash
+# Worker logs (Terminal 4)
+# Shows task execution, errors, completions
+
+# Beat logs (Terminal 5)
+# Shows scheduled task triggers
+
+# App logs (Terminal 2)
+# Shows job queueing from API
+```
+
+### Testing Celery
+
+#### Manually Trigger Daily Reminders
+
+```bash
+# From project root
+cd backend
+celery -A celery_app call celery_app.send_daily_reminders
+```
+
+#### Manually Trigger Monthly Reports
+
+```bash
+cd backend
+celery -A celery_app call celery_app.send_monthly_reports
+```
+
+#### Trigger CSV Export from API
+
+```bash
+# First get user token
+TOKEN=$(curl -s -X POST http://localhost:5001/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123","role":"admin"}' | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
+
+# Trigger export
+curl -X POST -H "Authorization: Bearer $TOKEN" \
+  http://localhost:5001/api/user/export
+```
+
+### Celery without Background Jobs
+
+If you don't want to run Celery (optional):
+
+1. Don't start Terminal 4 (Celery Worker)
+2. Don't start Terminal 5 (Celery Beat)
+3. Scheduled jobs won't run (daily reminders, monthly reports)
+4. CSV export won't work
+5. App still functions normally (just no async features)
+
+### Email Configuration
+
+For Celery jobs to send emails, you need Gmail credentials:
+
+**Option 1: Environment Variables**
+
+Create `.env` file:
+```env
+GMAIL_EMAIL=your-email@gmail.com
+GMAIL_PASSWORD=your-app-password
+```
+
+**Option 2: Direct in Code**
+
+Edit `backend/celery_app.py`:
+```python
+gmail_email = "your-email@gmail.com"
+gmail_password = "your-app-password"
+```
+
+**Get Gmail App Password:**
+1. Go to https://myaccount.google.com/security
+2. Enable 2-Step Verification
+3. Go to App passwords
+4. Select "Mail" and "Windows Computer"
+5. Copy the 16-character password
+6. Use this password (not your Gmail password)
+
+### Troubleshooting Celery
+
+#### "Redis connection refused"
+```bash
+# Make sure Redis is running (Terminal 1)
+redis-server
+
+# Check Redis status
+redis-cli ping
+# Should output: PONG
+```
+
+#### "No module named celery_app"
+```bash
+# Activate virtual environment first
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate  # Windows
+
+# Then run Celery
+celery -A celery_app worker --loglevel=info
+```
+
+#### Worker shows "No tasks available"
+- This is normal - means it's waiting for jobs
+- Check Beat terminal to see scheduled tasks
+- Trigger a job manually to test
+
+#### "Task received but not executing"
+```bash
+# Check if worker and beat are both running
+# Worker processes tasks (Terminal 4)
+# Beat schedules tasks (Terminal 5)
+# Both are required
+```
+
+#### Celery logs not showing
+```bash
+# Increase verbosity
+celery -A celery_app worker --loglevel=debug
+
+# Or with Beat
+celery -A celery_app beat --loglevel=debug
+```
+
+---
+
 ## 🌐 Access Points
 
 | Component | URL | Purpose |

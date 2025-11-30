@@ -121,17 +121,14 @@ export default {
     const fetchData = async () => {
       loading.value = true
       try {
-        const [lotsRes, allSpots] = await Promise.all([
-          adminApi.getParkingLots(),
-          Promise.all([])
-        ])
-        lots.value = lotsRes.data
+        const lotsRes = await adminApi.getParkingLots()
+        lots.value = lotsRes
         
         // Fetch spots for each lot
         const allSpotsData = []
         for (const lot of lots.value) {
           const spotRes = await adminApi.getLotSpots(lot.id)
-          allSpotsData.push(...spotRes.data.spots)
+          allSpotsData.push(...(spotRes.spots || []))
         }
         spots.value = allSpotsData
       } catch (error) {

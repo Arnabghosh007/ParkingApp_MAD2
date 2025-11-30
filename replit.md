@@ -165,7 +165,27 @@ cd backend && celery -A celery_app beat --loglevel=info
 
 ## Recent Changes (November 30, 2025)
 
-### NEW - Fetch API + Vuex Refactor (LATEST)
+### 🔧 CRITICAL BUG FIX - API Response Handling (LATEST)
+- ✅ **Fixed API Response Handling Across Components**
+  - Issue: Components were accessing `.data` property that doesn't exist in Fetch API responses
+  - Fixed ParkingSpots.vue: Changed `lotsRes.data` → `lotsRes` (direct array)
+  - Fixed ParkingSpots.vue: Changed `spotRes.data.spots` → `spotRes.spots` 
+  - API now correctly returns parsed JSON directly (not wrapped in `.data` object)
+  - All admin endpoints now load data successfully
+  - All user endpoints now load data successfully
+
+- ✅ **Database Cleaned**
+  - Removed hardcoded sample data from init_db()
+  - Only admin user created on fresh start
+  - Database starts clean and ready for dynamic data
+
+- ✅ **Frontend Rebuilt & Deployed**
+  - Vite build completed successfully
+  - All 75 modules transformed
+  - New build: dist/assets/ (Gzip optimized)
+  - Frontend hot-reload tested and working
+
+### Previous - Fetch API + Vuex Refactor
 - ✅ **Replaced Axios with Fetch API**
   - Native browser Fetch API for all HTTP requests
   - Reduced dependencies (removed axios)

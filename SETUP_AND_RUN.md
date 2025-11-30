@@ -19,7 +19,7 @@ redis-cli --version
 
 ---
 
-## 🚀 Quick Start (5 Minutes)
+## 🚀 Quick Start (5 Minutes) - 3 Terminals Only!
 
 ### 1. Clone/Open Project in VS Code
 
@@ -28,24 +28,7 @@ cd /path/to/parking-app
 code .
 ```
 
-### 2. Start Redis Server
-
-**On Windows (if using WSL):**
-```bash
-wsl redis-server
-```
-
-**On macOS/Linux:**
-```bash
-redis-server
-```
-
-**Or using Docker:**
-```bash
-docker run -d -p 6379:6379 redis:latest
-```
-
-### 3. Install Python Dependencies
+### 2. Install Python Dependencies
 
 Open VS Code terminal and run:
 
@@ -63,45 +46,52 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Install Frontend Dependencies
+### 3. Install Frontend Dependencies
 
 ```bash
 cd frontend
 npm install
 ```
 
-### 5. Start Backend (Terminal 1)
+### 4. Start Services (3 Terminals)
 
+**Terminal 1 - Redis:**
+```bash
+redis-server
+```
+
+**Terminal 2 - Backend API:**
 ```bash
 cd backend
 python app.py
 ```
 
-**Expected Output:**
-```
-* Running on http://127.0.0.1:5001
-* Debug mode: on
-```
-
-### 6. Start Frontend (Terminal 2)
-
+**Terminal 3 - Frontend UI:**
 ```bash
 cd frontend
 npm run dev
 ```
 
-**Expected Output:**
-```
-VITE v5.4.21 ready in 500 ms
-➜  Local:   http://localhost:5000/
-```
-
-### 7. Access the Application
+### 5. Access the Application
 
 Open your browser and go to:
 ```
 http://localhost:5000
 ```
+
+**Default Credentials:**
+- Username: `admin`
+- Password: `admin123`
+
+---
+
+## ⚡ That's It! No Celery Worker Needed!
+
+✅ Export works **instantly** (no background job needed)  
+✅ App runs with just **3 terminals**  
+✅ CSV downloads automatically when clicked  
+
+**Celery is optional** - only needed for scheduled email reminders & monthly reports.
 
 ---
 
@@ -176,62 +166,62 @@ JWT_SECRET_KEY=your-secret-key-here
 
 ## 🔧 Running the Application
 
-### Option A: Manual (Separate Terminals)
+### Standard Setup (3 Terminals - Recommended)
 
-**Terminal 1 - Redis:**
+**Terminal 1 - Redis (Cache & Session Storage):**
 ```bash
 redis-server
 ```
 
-**Terminal 2 - Backend:**
+**Terminal 2 - Backend API:**
 ```bash
 cd backend
 python app.py
 ```
 
-**Terminal 3 - Frontend:**
+**Terminal 3 - Frontend UI:**
 ```bash
 cd frontend
 npm run dev
 ```
 
-**Terminal 4 - Celery Worker (for background jobs):**
+That's all you need! The app will be available at http://localhost:5000
+
+### Optional: Add Scheduled Email Jobs
+
+If you want **daily reminders** and **monthly reports** via email:
+
+**Terminal 4 - Celery Worker:**
 ```bash
 cd backend
 celery -A celery_app worker --loglevel=info
 ```
 
-**Terminal 5 - Celery Beat (for scheduled tasks):**
+**Terminal 5 - Celery Beat (Scheduler):**
 ```bash
 cd backend
 celery -A celery_app beat --loglevel=info
 ```
 
-### Option B: Automated (Single Command)
-
-Run the combined startup script:
-
-```bash
-# From project root
-redis-server --daemonize yes && cd backend && python app.py & sleep 2 && cd ../frontend && npm run dev
-```
+Without Celery, the app works perfectly - you just won't get scheduled emails.
 
 ---
 
-## 🔄 Celery - Background Jobs & Scheduling
+## 🔄 Celery - Background Jobs & Scheduling (Optional)
 
-Celery handles background jobs (async tasks) and scheduled jobs (recurring tasks). It requires Redis to work.
+Celery handles **scheduled jobs** (recurring tasks). It's **optional** and only needed for email notifications.
 
-### Why Celery?
+⚠️ **Note:** CSV export now works **instantly without Celery**!
 
-- **Daily Reminders** - Automatically send emails at 6 PM every day
+### Why Celery? (Optional Features Only)
+
+- **Daily Reminders** - Automatically send emails at 6 PM to inactive users
 - **Monthly Reports** - Generate PDF reports on the 1st of each month
-- **CSV Export** - Process large exports without blocking the app
-- **Email Notifications** - Send emails without slowing down API responses
+- **Email Notifications** - Send automated emails without blocking the app
 
-### Running Celery
+### Running Celery (Optional)
 
-You need TWO Celery components running (in addition to Redis, Backend, and Frontend):
+If you want scheduled emails, run TWO Celery components (in addition to Redis, Backend, and Frontend):
 
 #### Terminal 4 - Celery Worker (Processes Jobs)
 
@@ -314,24 +304,12 @@ Scheduler started.
 
 **Code:** `backend/celery_app.py` - `send_monthly_reports()`
 
-#### 3. CSV Export (User-Triggered)
+### Complete Startup
 
-**Trigger:** User clicks "Export" button
-
-**What it does:**
-- Generates CSV with all parking history
-- Includes: booking ID, spot ID, lot name, vehicle, timestamps, cost
-- Creates async job that can be tracked
-- Notifies user when complete
-
-**Code:** `backend/celery_app.py` - `generate_csv_task()`
-
-### Complete Startup (All Services)
-
-**For full functionality, run all 5 terminals:**
+**Minimum (3 Terminals - Everything Works):**
 
 ```bash
-# Terminal 1: Redis (Cache & Job Queue)
+# Terminal 1: Redis (Cache & Session Storage)
 redis-server
 
 # Terminal 2: Backend API
@@ -341,12 +319,18 @@ python app.py
 # Terminal 3: Frontend UI
 cd frontend
 npm run dev
+```
 
-# Terminal 4: Celery Worker (Process Jobs)
+**With Scheduled Emails (5 Terminals):**
+
+Add these if you want daily reminders & monthly reports:
+
+```bash
+# Terminal 4: Celery Worker (Process Email Jobs)
 cd backend
 celery -A celery_app worker --loglevel=info
 
-# Terminal 5: Celery Beat (Schedule Jobs)
+# Terminal 5: Celery Beat (Schedule Email Jobs)
 cd backend
 celery -A celery_app beat --loglevel=info
 ```

@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark modern-navbar">
+  <nav class="navbar navbar-expand-lg navbar-dark modern-navbar sticky-top">
     <div class="container-fluid">
       <router-link class="navbar-brand" :to="dashboardRoute">
         <i class="bi bi-car-front-fill me-2"></i>

@@ -143,17 +143,29 @@ export default {
 <style scoped>
 .modern-card {
   border: none;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.2);
   overflow: hidden;
   background: white;
-  animation: slideUp 0.3s ease-out;
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.modern-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.02) 0%, rgba(118, 75, 162, 0.02) 100%);
+  pointer-events: none;
 }
 
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -164,51 +176,83 @@ export default {
 .card-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 2rem 1rem 1rem;
+  padding: 2.5rem 1.5rem 1.5rem;
   border-bottom: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
 }
 
 .icon-container {
-  width: 60px;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
+  width: 70px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 2.2rem;
   margin: 0 auto;
   backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.icon-container:hover {
+  transform: scale(1.1) rotate(-5deg);
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .card-header h3 {
-  font-weight: 700;
+  font-weight: 800;
   margin-bottom: 0.25rem;
+  font-size: 1.8rem;
+  position: relative;
+  z-index: 1;
 }
 
 .subtitle {
-  opacity: 0.9;
+  opacity: 0.95;
   font-size: 0.95rem;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
 }
 
 .btn-group {
   display: flex;
   gap: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .btn-check:checked + .btn-outline-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-color: transparent;
   color: white;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+  transform: translateY(-2px);
 }
 
 .btn-outline-primary {
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-width: 1.5px;
 }
 
 .btn-outline-primary:hover {
   transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
 }
 </style>

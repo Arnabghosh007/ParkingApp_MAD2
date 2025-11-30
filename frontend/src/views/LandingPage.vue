@@ -394,4 +394,132 @@ export default {
     width: 100%;
   }
 }
+
+/* Hero Section Enhancements */
+.hero-section {
+  background: linear-gradient(135deg, #f5f7fc 0%, #f0f3ff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+  letter-spacing: -1px;
+}
+
+.hero-subtitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
+.hero-description {
+  font-size: 1.1rem;
+  color: #4b5563;
+  line-height: 1.8;
+  max-width: 600px;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Feature Card Enhancements */
+.feature-card {
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  background: white;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  text-align: center;
+  height: 100%;
+}
+
+.feature-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 15px 50px rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.2);
+}
+
+.feature-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  color: white;
+  margin: 0 auto 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.15) rotate(10deg);
+}
+
+.feature-title {
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
+  letter-spacing: -0.5px;
+}
+
+.feature-text {
+  color: #6c757d;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Floating Cards */
+.floating-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  animation: float 6s ease-in-out infinite;
+}
+
+.floating-card i {
+  font-size: 1.8rem;
+  color: #667eea;
+}
+
+/* Stats */
+.stat-item {
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: #6c757d;
+  margin: 0;
+  font-weight: 600;
+}
 </style>

@@ -1,51 +1,6 @@
 <template>
   <div class="dashboard-container">
     <div class="container-fluid">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">
-          <i class="bi bi-house-door-fill text-primary me-2"></i>
-          My Dashboard
-        </h2>
-        <span class="badge bg-success">User</span>
-      </div>
-      
-      <div class="modern-tabs mb-4">
-        <router-link 
-          class="tab-link" 
-          :class="{ active: activeTab === 'dashboard' }"
-          :to="{ name: 'user-tab', params: { tab: 'dashboard' } }"
-        >
-          <i class="bi bi-house-door me-2"></i> Dashboard
-        </router-link>
-        <router-link 
-          class="tab-link" 
-          :class="{ active: activeTab === 'book' }"
-          :to="{ name: 'user-tab', params: { tab: 'book' } }"
-        >
-          <i class="bi bi-plus-circle me-2"></i> Book Spot
-        </router-link>
-        <router-link 
-          class="tab-link" 
-          :class="{ active: activeTab === 'history' }"
-          :to="{ name: 'user-tab', params: { tab: 'history' } }"
-        >
-          <i class="bi bi-clock-history me-2"></i> History
-        </router-link>
-        <router-link 
-          class="tab-link" 
-          :class="{ active: activeTab === 'profile' }"
-          :to="{ name: 'user-tab', params: { tab: 'profile' } }"
-        >
-          <i class="bi bi-person me-2"></i> Profile
-        </router-link>
-        <router-link 
-          class="tab-link" 
-          :class="{ active: activeTab === 'payment' }"
-          :to="{ name: 'user-tab', params: { tab: 'payment' } }"
-        >
-          <i class="bi bi-credit-card me-2"></i> Payment
-        </router-link>
-      </div>
       
       <div class="tab-content">
         <div v-if="activeTab === 'dashboard'" class="row g-4">

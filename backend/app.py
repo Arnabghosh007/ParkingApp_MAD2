@@ -658,6 +658,26 @@ def get_payments():
         'total': len(payments)
     })
 
+
+@app.route('/api/admin/users/<int:user_id>', methods=['DELETE'])
+@admin_required
+def delete_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    # Cannot delete admin
+    if user.id == 1:
+        return jsonify({'error': 'Cannot delete admin user'}), 400
+    
+    # Delete user's bookings first
+    ReserveParkingSpot.query.filter_by(user_id=user_id).delete()
+    
+    # Delete user
+    db.session.delete(user)
+    db.session.commit()
+    
+    return jsonify({'message': 'User deleted successfully'})
 @app.route('/<path:path>')
 def serve_spa(path):
     """Catch-all route to serve the Vue SPA for all non-API routes"""

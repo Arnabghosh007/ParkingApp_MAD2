@@ -167,7 +167,15 @@ export default {
       releasing.value = true
       try {
         const response = await userApi.releaseSpot(activeBooking.value.id)
-        showToast(`Spot released! Total cost: ₹${response.data.cost}`, 'success')
+        const duration = response.data.duration_hours
+        const cost = response.data.cost
+        
+        showToast(`
+          Spot released successfully!
+          Duration: ${duration} hours
+          Total cost: ₹${cost}
+        `, 'success')
+        
         activeBooking.value = null
         emit('released')
       } catch (error) {

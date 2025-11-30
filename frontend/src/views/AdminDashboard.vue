@@ -1,51 +1,6 @@
 <template>
   <div class="dashboard-container">
     <div class="container-fluid">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">
-          <i class="bi bi-speedometer2 text-primary me-2"></i>
-          Admin Dashboard
-        </h2>
-        <span class="badge bg-primary">Administrator</span>
-      </div>
-      
-      <div class="modern-tabs mb-4">
-        <router-link 
-          class="tab-link" 
-          :class="{ active: activeTab === 'dashboard' }"
-          :to="{ name: 'admin-tab', params: { tab: 'dashboard' } }"
-        >
-          <i class="bi bi-graph-up me-2"></i> Dashboard
-        </router-link>
-        <router-link 
-          class="tab-link" 
-          :class="{ active: activeTab === 'lots' }"
-          :to="{ name: 'admin-tab', params: { tab: 'lots' } }"
-        >
-          <i class="bi bi-geo-alt me-2"></i> Parking Lots
-        </router-link>
-        <router-link 
-          class="tab-link" 
-          :class="{ active: activeTab === 'users' }"
-          :to="{ name: 'admin-tab', params: { tab: 'users' } }"
-        >
-          <i class="bi bi-people me-2"></i> Users
-        </router-link>
-        <router-link 
-          class="tab-link" 
-          :class="{ active: activeTab === 'spots' }"
-          :to="{ name: 'admin-tab', params: { tab: 'spots' } }"
-        >
-          <i class="bi bi-p-square-fill me-2"></i> Parking Spots
-        </router-link>
-        <router-link 
-          class="tab-link" 
-          :class="{ active: activeTab === 'charts' }"
-          :to="{ name: 'admin-tab', params: { tab: 'charts' } }"
-        >
-          <i class="bi bi-bar-chart me-2"></i> Charts
-        </router-link>
-      </div>
       
       <div class="tab-content">
         <DashboardStats v-if="activeTab === 'dashboard'" />

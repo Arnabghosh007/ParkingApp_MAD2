@@ -80,6 +80,9 @@ export const adminApi = {
   getUsers: () => 
     api.get('/admin/users'),
   
+  deleteUser: (userId) => 
+    api.delete(`/admin/users/${userId}`),
+  
   getParkingLots: () => 
     api.get('/admin/parking-lots'),
   

@@ -27,6 +27,7 @@
               <th>Phone</th>
               <th>Last Visit</th>
               <th>Joined</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -44,6 +45,18 @@
               <td>{{ user.phone || '-' }}</td>
               <td>{{ formatDate(user.last_visit) }}</td>
               <td>{{ formatDate(user.created_at) }}</td>
+              <td>
+                <button 
+                  class="btn btn-danger btn-sm" 
+                  @click="deleteUser(user.id)"
+                  :disabled="deleting === user.id"
+                  title="Delete user"
+                >
+                  <span v-if="deleting === user.id" class="spinner-border spinner-border-sm me-1"></span>
+                  <i v-else class="bi bi-trash me-1"></i>
+                  Delete
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -66,6 +79,7 @@ export default {
   setup() {
     const users = ref([])
     const loading = ref(false)
+    const deleting = ref(null)
     
     const fetchUsers = async () => {
       loading.value = true
@@ -76,6 +90,21 @@ export default {
         showToast('Failed to load users', 'error')
       } finally {
         loading.value = false
+      }
+    }
+    
+    const deleteUser = async (userId) => {
+      if (!confirm('Are you sure you want to delete this user?')) return
+      
+      deleting.value = userId
+      try {
+        await adminApi.deleteUser(userId)
+        users.value = users.value.filter(u => u.id !== userId)
+        showToast('User deleted successfully', 'success')
+      } catch (error) {
+        showToast(error.response?.data?.error || 'Failed to delete user', 'error')
+      } finally {
+        deleting.value = null
       }
     }
     
@@ -95,7 +124,9 @@ export default {
     return {
       users,
       loading,
-      formatDate
+      deleting,
+      formatDate,
+      deleteUser
     }
   }
 }
